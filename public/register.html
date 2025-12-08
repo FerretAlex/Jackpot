@@ -2,35 +2,35 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Регистрация — Mini Match</title>
+  <title>Registration — Jackpot</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-100 min-h-screen flex items-center justify-center">
   <div class="max-w-md w-full bg-white shadow-sm rounded-2xl p-8">
-    <h1 class="text-2xl font-semibold text-slate-900 text-center mb-2">Регистрация</h1>
-    <p class="text-sm text-slate-500 text-center mb-6">Создай учебный аккаунт, чтобы протестировать сайт</p>
+    <h1 class="text-2xl font-semibold text-slate-900 text-center mb-2">Registration</h1>
+    <p class="text-sm text-slate-500 text-center mb-6">Make an account</p>
 
     <div class="space-y-3">
       <div>
-        <label class="block text-sm text-slate-600 mb-1">Имя</label>
-        <input id="name" type="text" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400" placeholder="Ваше имя">
+        <label class="block text-sm text-slate-600 mb-1">Name</label>
+        <input id="name" type="text" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400" placeholder="Your name">
       </div>
       <div>
         <label class="block text-sm text-slate-600 mb-1">Email</label>
         <input id="email" type="email" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400" placeholder="you@example.com">
       </div>
       <div>
-        <label class="block text-sm text-slate-600 mb-1">Пароль</label>
-        <input id="password" type="password" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400" placeholder="Минимум 6 символов">
+        <label class="block text-sm text-slate-600 mb-1">Password</label>
+        <input id="password" type="password" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400" placeholder="Minimum of 6 symbols">
       </div>
       <button onclick="registerUser()" class="w-full mt-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-medium py-2.5 rounded-lg transition">
-        Зарегистрироваться
+        Register
       </button>
     </div>
 
     <p class="text-xs text-slate-500 text-center mt-4">
-      Уже есть аккаунт?
-      <a href="login.html" class="text-sky-600 hover:underline">Войти</a>
+      Already have an account?
+      <a href="login.html" class="text-sky-600 hover:underline">Log-in</a>
     </p>
 
     <p id="error" class="text-xs text-red-500 text-center mt-3 hidden"></p>
