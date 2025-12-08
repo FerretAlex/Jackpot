@@ -2,37 +2,37 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Профиль — Mini Match</title>
+  <title>Profile — Jackpot</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col">
 <nav class="bg-white shadow-sm">
   <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
-    <a href="index.html" class="text-sm text-slate-600 hover:text-sky-600">← Назад к пользователям</a>
-    <button onclick="logout()" class="text-sm text-slate-500 hover:text-red-500">Выйти</button>
+    <a href="index.html" class="text-sm text-slate-600 hover:text-sky-600">← Back to users</a>
+    <button onclick="logout()" class="text-sm text-slate-500 hover:text-red-500">Log-out</button>
   </div>
 </nav>
 
 <main class="flex-1">
   <div class="max-w-4xl mx-auto px-4 py-8">
-    <h1 class="text-xl font-semibold text-slate-900 mb-4">Мой профиль</h1>
+    <h1 class="text-xl font-semibold text-slate-900 mb-4">My profile</h1>
 
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex flex-col sm:flex-row sm:items-center sm:space-x-6">
       <img id="avatar" src="default-avatar.png" class="w-24 h-24 rounded-xl object-cover border border-slate-200 mb-4 sm:mb-0" alt="avatar">
       <div class="flex-1 space-y-1">
-        <p id="name" class="text-base font-semibold text-slate-900">Имя</p>
+        <p id="name" class="text-base font-semibold text-slate-900">Name</p>
         <p id="email" class="text-sm text-slate-500">email@example.com</p>
-        <p class="text-xs text-slate-400 pt-2">Эти данные хранятся в JSON-файле <code>database.json</code>. Подходит для учебных проектов и лабораторных.</p>
+        <p class="text-xs text-slate-400 pt-2">This data is stored in a JSON-file <code>database.json</code>. It fits for studying or lab works.</p>
       </div>
     </div>
 
     <div class="mt-6 bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-      <h2 class="text-sm font-semibold text-slate-800 mb-3">Обновить аватар</h2>
-      <p class="text-xs text-slate-500 mb-3">Выбери картинку (jpg/png), она сохранится в папке <code>uploads</code>, а путь запишется в JSON-базу.</p>
+      <h2 class="text-sm font-semibold text-slate-800 mb-3">Update avatar</h2>
+      <p class="text-xs text-slate-500 mb-3">Choose an image (jpg/png), it will be stored in the folder <code>uploads</code>, and its route is stored in the JSON file.</p>
 
       <input id="file" type="file" class="text-xs text-slate-600 mb-3">
       <button onclick="uploadAvatar()" class="inline-flex items-center px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white text-xs font-medium rounded-lg">
-        Загрузить новое фото
+        Upload new photo
       </button>
 
       <p id="msg" class="text-xs text-emerald-600 mt-3 hidden"></p>
