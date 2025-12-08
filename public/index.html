@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini Match — пользователи</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col">
+<nav class="bg-white shadow-sm">
+  <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center space-x-2">
+      <div class="w-8 h-8 rounded-xl bg-sky-500 flex items-center justify-center text-white text-sm font-semibold">MM</div>
+      <span class="text-sm font-semibold text-slate-900">Mini Match</span>
+    </div>
+    <div class="flex items-center space-x-4 text-sm">
+      <a href="chat.html" class="text-slate-600 hover:text-sky-600">Чат (Match 1)</a>
+      <a href="profile.html" class="text-slate-600 hover:text-sky-600">Профиль</a>
+      <button onclick="logout()" class="text-slate-500 hover:text-red-500">Выйти</button>
+    </div>
+  </div>
+</nav>
+
+<main class="flex-1">
+  <div class="max-w-5xl mx-auto px-4 py-6">
+    <h1 class="text-xl font-semibold text-slate-900 mb-4">Пользователи рядом</h1>
+    <p class="text-sm text-slate-500 mb-6">Выбирай, кто тебе интересен. Никаких свайп-анимаций — только аккуратные карточки и кнопки.</p>
+
+    <div id="users" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
+    <p id="empty" class="text-sm text-slate-500 mt-4 hidden">Пока нет других пользователей. Создай ещё один аккаунт в другом браузере.</p>
+  </div>
+</main>
+
+<script>
+const token = localStorage.getItem("token");
+const meId = Number(localStorage.getItem("userId"));
+
+if (!token) {
+  window.location.href = "login.html";
+}
+
+let users = [];
+
+async function loadUsers() {
+  const res = await fetch("/api/users", {
+    headers: { "Authorization": "Bearer " + token }
+  });
+
+  if (res.status === 401) {
+    localStorage.clear();
+    window.location.href = "login.html";
+    return;
+  }
+
+  users = await res.json();
+  renderUsers();
+}
+
+function renderUsers() {
+  const container = document.getElementById("users");
+  const empty = document.getElementById("empty");
+
+  container.innerHTML = "";
+  if (!users.length) {
+    empty.classList.remove("hidden");
+    return;
+  } else {
+    empty.classList.add("hidden");
+  }
+
+  users.forEach(user => {
+    const card = document.createElement("div");
+    card.className = "bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col";
+
+    const avatarSrc = user.avatar || "default-avatar.png";
+
+    card.innerHTML = `
+      <img src="${avatarSrc}" onerror="this.src='default-avatar.png'" class="w-full h-40 object-cover">
+      <div class="p-4 flex-1 flex flex-col">
+        <div class="mb-1">
+          <p class="text-sm font-semibold text-slate-900">${user.name || "Без имени"}</p>
+          <p class="text-xs text-slate-500">${user.email}</p>
+        </div>
+        <div class="mt-auto pt-3 flex space-x-2">
+          <button class="flex-1 border border-slate-200 rounded-lg py-1.5 text-sm text-slate-600 hover:bg-slate-50" onclick="swipe('${user.id}','dislike')">Скрыть</button>
+          <button class="flex-1 bg-sky-500 hover:bg-sky-600 text-white text-sm rounded-lg py-1.5" onclick="swipe('${user.id}','like')">Нравится</button>
+        </div>
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+async function swipe(toUserId, type) {
+  await fetch("/api/swipe", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token
+    },
+    body: JSON.stringify({
+      fromUserId: meId,
+      toUserId,
+      swipeType: type
+    })
+  });
+
+  users = users.filter(u => String(u.id) !== String(toUserId));
+  renderUsers();
+}
+
+function logout() {
+  localStorage.clear();
+  window.location.href = "login.html";
+}
+
+loadUsers();
+</script>
+</body>
+</html>

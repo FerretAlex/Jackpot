@@ -1,0 +1,40 @@
+{
+  "users": [
+    {
+      "id": 1765220758470,
+      "email": "vardul2003@gmail.com",
+      "password": "$2b$10$rkw5mUIpOyQelOp3BEJy7.yYGCqT3ZojkM/AZ/7ywFyhqzpVT6LdG",
+      "name": "Natella",
+      "avatar": "/uploads/1765220794554.jpg"
+    },
+    {
+      "id": 1765220851949,
+      "email": "vardul@gmail.com",
+      "password": "$2b$10$9yIf0YHBEEcC3BagnELjGuEv0JGg2RHV9utIYHN4I9Q8zMpTa8EH.",
+      "name": "Natella 2",
+      "avatar": null
+    }
+  ],
+  "swipes": [
+    {
+      "id": 1765220920029,
+      "from": 1765220758470,
+      "to": "1765220851949",
+      "type": "like"
+    },
+    {
+      "id": 1765220925615,
+      "from": 1765220851949,
+      "to": "1765220758470",
+      "type": "like"
+    },
+    {
+      "id": 1765220932414,
+      "from": 1765220851949,
+      "to": "1765220758470",
+      "type": "like"
+    }
+  ],
+  "matches": [],
+  "messages": []
+}
