@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Mini Match — пользователи</title>
+  <title>Jackpot - users</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col">
@@ -22,11 +22,11 @@
 
 <main class="flex-1">
   <div class="max-w-5xl mx-auto px-4 py-6">
-    <h1 class="text-xl font-semibold text-slate-900 mb-4">Пользователи рядом</h1>
-    <p class="text-sm text-slate-500 mb-6">Выбирай, кто тебе интересен. Никаких свайп-анимаций — только аккуратные карточки и кнопки.</p>
+    <h1 class="text-xl font-semibold text-slate-900 mb-4">Users nearby</h1>
+    <p class="text-sm text-slate-500 mb-6">Choose people you are interested in.</p>
 
     <div id="users" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
-    <p id="empty" class="text-sm text-slate-500 mt-4 hidden">Пока нет других пользователей. Создай ещё один аккаунт в другом браузере.</p>
+    <p id="empty" class="text-sm text-slate-500 mt-4 hidden">Still no users(</p>
   </div>
 </main>
 
@@ -77,12 +77,12 @@ function renderUsers() {
       <img src="${avatarSrc}" onerror="this.src='default-avatar.png'" class="w-full h-40 object-cover">
       <div class="p-4 flex-1 flex flex-col">
         <div class="mb-1">
-          <p class="text-sm font-semibold text-slate-900">${user.name || "Без имени"}</p>
+          <p class="text-sm font-semibold text-slate-900">${user.name || "No name"}</p>
           <p class="text-xs text-slate-500">${user.email}</p>
         </div>
         <div class="mt-auto pt-3 flex space-x-2">
-          <button class="flex-1 border border-slate-200 rounded-lg py-1.5 text-sm text-slate-600 hover:bg-slate-50" onclick="swipe('${user.id}','dislike')">Скрыть</button>
-          <button class="flex-1 bg-sky-500 hover:bg-sky-600 text-white text-sm rounded-lg py-1.5" onclick="swipe('${user.id}','like')">Нравится</button>
+          <button class="flex-1 border border-slate-200 rounded-lg py-1.5 text-sm text-slate-600 hover:bg-slate-50" onclick="swipe('${user.id}','dislike')">Hide</button>
+          <button class="flex-1 bg-sky-500 hover:bg-sky-600 text-white text-sm rounded-lg py-1.5" onclick="swipe('${user.id}','like')">Like</button>
         </div>
       </div>
     `;
