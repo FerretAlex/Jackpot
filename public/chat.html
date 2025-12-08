@@ -2,27 +2,27 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Чат — Mini Match</title>
+  <title>Chat</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col">
 <nav class="bg-white shadow-sm">
   <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
-    <a href="index.html" class="text-sm text-slate-600 hover:text-sky-600">← Назад</a>
-    <button onclick="logout()" class="text-sm text-slate-500 hover:text-red-500">Выйти</button>
+    <a href="index.html" class="text-sm text-slate-600 hover:text-sky-600">← Back</a>
+    <button onclick="logout()" class="text-sm text-slate-500 hover:text-red-500">Exit</button>
   </div>
 </nav>
 
 <main class="flex-1">
   <div class="max-w-4xl mx-auto px-4 py-6 flex flex-col h-[calc(100vh-4rem-3rem)]">
-    <h1 class="text-lg font-semibold text-slate-900 mb-4">Учебный чат (Match 1)</h1>
+    <h1 class="text-lg font-semibold text-slate-900 mb-4">Prototype chat</h1>
 
     <div id="messages" class="flex-1 bg-white rounded-2xl shadow-sm border border-slate-100 p-4 overflow-y-auto space-y-2 text-sm"></div>
 
     <div class="mt-4 flex space-x-2">
       <input id="msg-input" type="text" class="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400" placeholder="Введите сообщение...">
       <button onclick="sendMessage()" class="px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-medium rounded-lg">
-        Отправить
+        Send
       </button>
     </div>
   </div>
@@ -34,7 +34,7 @@ const userId = Number(localStorage.getItem("userId"));
 if (!token) {
   window.location.href = "login.html";
 }
-const matchId = 1; // учебный общий чат
+const matchId = 1; 
 
 async function loadMessages() {
   const res = await fetch(`/api/chat/${matchId}`, {
