@@ -4,7 +4,26 @@
   <meta charset="UTF-8">
   <title>Registration — Jackpot</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+  .chip {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;     
+    border-radius: 9999px;    
+    border: 1px solid rgb(203 213 225); 
+    background-color: rgb(248 250 252); 
+    color: rgb(71 85 105);  
+    cursor: pointer;
+    transition: .2s;
+  }
+
+  .chip.active {
+    background-color: rgb(14 165 233); 
+    border-color: rgb(2 132 199);      
+    color: white;
+  }
+</style>
 </head>
+
 <body class="bg-slate-100 min-h-screen flex items-center justify-center">
   <div class="max-w-md w-full bg-white shadow-sm rounded-2xl p-8">
     <h1 class="text-2xl font-semibold text-slate-900 text-center mb-2">Registration</h1>
@@ -45,9 +64,9 @@
         <select id="gender"
                 class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400">
           <option value="">Select gender</option>
-          <option value="male">Мужской</option>
-          <option value="female">Женский</option>
-          <option value="other">Другое</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Prefer not to say</option>
         </select>
       </div>
 
@@ -55,13 +74,16 @@
         <label class="block text-sm text-slate-600 mb-1">Faculty</label>
         <select id="faculty"
                 class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400">
-          <option value="">Выберите факультет</option>
-          <option value="IT">IT / Computer Science</option>
-          <option value="Economics">Economics</option>
-          <option value="Engineering">Engineering</option>
-          <option value="Humanities">Humanities</option>
-          <option value="Management">Management</option>
-          <option value="Other">Other</option>
+          <option value="">Select faculty</option>
+          <option value="Engineering">Faculty of Civil and Mechanical Engineering</option>
+          <option value="NaturalSciences">Faculty of Natural Sciences and Technology</option>
+          <option value="IT">Faculty of Computer Science, Information Technology and Energy</option>
+          <option value="Economics">Faculty of Engineering Economics and Management</option>
+          <option value="Management">Institute of Architecture and Design</option>
+          <option value="Architecture">Riga Business School</option>
+          <option value="MaritimeAcademy">Latvian Maritime Academy of Riga Technical University</option>
+          <option value="Liepaja">RTU Liepaja</option>
+          <option value="Rezekne">RTU Rezekne</option>
         </select>
       </div>
 
@@ -69,35 +91,70 @@
         <label class="block text-sm text-slate-600 mb-1">Course</label>
         <select id="course"
                 class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400">
-          <option value="">Выберите курс</option>
-          <option value="1">1 курс</option>
-          <option value="2">2 курс</option>
-          <option value="3">3 курс</option>
-          <option value="4">4 курс</option>
-          <option value="5">Магистратура 1</option>
-          <option value="6">Магистратура 2</option>
+          <option value="">Select your course</option>
+          <option value="1">Bachelor 1</option>
+          <option value="2">Bachelor 2</option>
+          <option value="3">Bachelor 3</option>
+          <option value="4">Bachelor 4</option>
+          <option value="5">Master 1</option>
+          <option value="6">Master 2</option>
+          <option value="7">PhD</option>
         </select>
       </div>
 
       <div>
-        <label class="block text-sm text-slate-600 mb-1">Interests</label>
-        <select id="interests" multiple
-                class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm h-24 focus:outline-none focus:ring-2 focus:ring-sky-400">
-          <option value="sports">Спорт</option>
-          <option value="music">Музыка</option>
-          <option value="movies">Фильмы</option>
-          <option value="gaming">Игры</option>
-          <option value="science">Наука</option>
-          <option value="travel">Путешествия</option>
-        </select>
-        <p class="text-xs text-slate-400 mt-1">Выберите несколько через Ctrl / Cmd</p>
-      </div>
+  <label class="block text-sm text-slate-600 mb-1">Interests</label>
+
+  <div id="interest-chips" class="flex flex-wrap gap-2">
+    <button type="button" data-value="sports" class="chip">Sport</button>
+    <button type="button" data-value="music" class="chip">Music</button>
+    <button type="button" data-value="movies" class="chip">Movies</button>
+    <button type="button" data-value="gaming" class="chip">Board games</button>
+    <button type="button" data-value="science" class="chip">Computer games</button>
+    <button type="button" data-value="travel" class="chip">Travel</button>
+    <button type="button" data-value="travel" class="chip">Food</button>
+    <button type="button" data-value="travel" class="chip">Astrology</button>
+    <button type="button" data-value="travel" class="chip">Science</button>
+    <button type="button" data-value="travel" class="chip">Art</button>
+  </div>
+
+  
+  <input type="hidden" id="interests">
+  
+  <p class="text-xs text-slate-400 mt-1">Choose your interests</p>
+<script>
+let selectedInterests = [];
+
+document.addEventListener("DOMContentLoaded", () => {
+  const chips = document.querySelectorAll("#interest-chips .chip");
+
+  chips.forEach(chip => {
+    chip.addEventListener("click", () => {
+      const value = chip.dataset.value;
+
+      chip.classList.toggle("active");
+
+      if (chip.classList.contains("active")) {
+        selectedInterests.push(value);
+      } else {
+        selectedInterests = selectedInterests.filter(x => x !== value);
+      }
+
+      document.getElementById("interests").value =
+        JSON.stringify(selectedInterests);
+    });
+  });
+});
+</script>
+
+</div>
+
 
       <div>
         <label class="block text-sm text-slate-600 mb-1">About me</label>
         <textarea id="about" rows="3"
                   class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
-                  placeholder="Немного о себе"></textarea>
+                  placeholder="Tell more about you"></textarea>
       </div>
 
       <button onclick="registerUser()"
@@ -116,6 +173,7 @@
   </div>
 
 <script>
+
 async function registerUser() {
   const get = id => document.getElementById(id).value.trim();
   const getMulti = id => Array.from(document.getElementById(id).selectedOptions).map(o => o.value);
@@ -128,7 +186,7 @@ async function registerUser() {
     gender: get("gender"),
     faculty: get("faculty"),
     course: Number(get("course")),
-    interests: getMulti("interests"),
+    interests: selectedInterests,
     about: get("about")
   };
 
@@ -150,10 +208,11 @@ async function registerUser() {
     return;
   }
 
-  okBox.textContent = "Регистрация успешна. Теперь можно войти.";
+  okBox.textContent = "Registration was successful. You can log in now. ";
   okBox.classList.remove("hidden");
 
   setTimeout(() => window.location.href = "login.html", 1200);
+
 }
 </script>
 </body>
