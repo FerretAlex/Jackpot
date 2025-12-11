@@ -38,7 +38,47 @@
       <p id="msg" class="text-xs text-emerald-600 mt-3 hidden"></p>
       <p id="err" class="text-xs text-red-500 mt-3 hidden"></p>
     </div>
+    <div class="mt-6 bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+      <h2 class="text-base font-semibold text-slate-900 mb-4 flex items-center gap-2">
+        <span class="w-1.5 h-1.5 bg-sky-500 rounded-full"></span>
+        Profile details
+      </h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+          <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Age</p>
+          <p id="age" class="text-slate-800 font-medium">—</p>
+        </div>
+
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+          <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Gender</p>
+          <p id="gender" class="text-slate-800 font-medium">—</p>
+        </div>
+
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+          <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Faculty</p>
+          <p id="faculty" class="text-slate-800 font-medium">—</p>
+        </div>
+
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+          <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Course</p>
+          <p id="course" class="text-slate-800 font-medium">—</p>
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <p class="text-slate-500 text-xs uppercase tracking-wide mb-2">Interests</p>
+        <div id="interestsBox" class="flex flex-wrap gap-2"></div>
+      </div>
+
+      <div class="mt-6">
+        <p class="text-slate-500 text-xs uppercase tracking-wide mb-2">About me</p>
+        <p id="about" class="text-slate-700 bg-slate-50 border border-slate-200 rounded-xl p-4 leading-relaxed min-h-[60px]">—</p>
+      </div>
+    </div>
+
   </div>
+
 </main>
 
 <script>
@@ -59,10 +99,44 @@ async function loadProfile() {
   }
 
   const me = await res.json();
+
   document.getElementById("name").textContent = me.name || "Без имени";
   document.getElementById("email").textContent = me.email;
   document.getElementById("avatar").src = me.avatar || "default-avatar.png";
+
+  document.getElementById("age").textContent = me.age || "—";
+  document.getElementById("gender").textContent =
+    me.gender ? capitalize(me.gender) : "—";
+  document.getElementById("faculty").textContent = me.faculty || "—";
+  document.getElementById("course").textContent = me.course || "—";
+
+  // Interests (chips)
+  const interestsBox = document.getElementById("interestsBox");
+  interestsBox.innerHTML = "";
+
+  if (me.interests && me.interests.length) {
+    me.interests.forEach(item => {
+      const chip = document.createElement("span");
+      chip.textContent = item;
+      chip.className =
+        "px-3 py-1 rounded-full bg-sky-100 text-sky-700 text-xs font-medium border border-sky-200";
+      interestsBox.appendChild(chip);
+    });
+  } else {
+    const empty = document.createElement("span");
+    empty.textContent = "—";
+    empty.className = "text-slate-500";
+    interestsBox.appendChild(empty);
+  }
+
+  // About
+  document.getElementById("about").textContent = me.about || "—";
 }
+
+function capitalize(s) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
 
 async function uploadAvatar() {
   const fileInput = document.getElementById("file");
