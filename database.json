@@ -13,28 +13,88 @@
       "password": "$2b$10$9yIf0YHBEEcC3BagnELjGuEv0JGg2RHV9utIYHN4I9Q8zMpTa8EH.",
       "name": "Natella 2",
       "avatar": null
+    },
+    {
+      "id": 1765227860788,
+      "email": "cole.fodork@gmail.com",
+      "password": "$2b$10$jnoXSjLVjXVnlI58SuQM2eTULtkw6YkJAL.dIpjKBXP635GmyvrVC",
+      "name": "Sasha",
+      "avatar": null
     }
   ],
   "swipes": [
     {
-      "id": 1765220920029,
+      "id": 1765482718691,
       "from": 1765220758470,
-      "to": "1765220851949",
+      "to": 1765227860788,
       "type": "like"
     },
     {
-      "id": 1765220925615,
-      "from": 1765220851949,
-      "to": "1765220758470",
+      "id": 1765482731000,
+      "from": 1765227860788,
+      "to": 1765220758470,
       "type": "like"
     },
     {
-      "id": 1765220932414,
-      "from": 1765220851949,
-      "to": "1765220758470",
+      "id": 1765482948716,
+      "from": 1765227860788,
+      "to": 1765220758470,
+      "type": "like"
+    },
+    {
+      "id": 1765483151483,
+      "from": 1765227860788,
+      "to": 1765220758470,
+      "type": "like"
+    },
+    {
+      "id": 1765483871033,
+      "from": 1765227860788,
+      "to": 1765220758470,
+      "type": "like"
+    },
+    {
+      "id": 1765483913576,
+      "from": 1765227860788,
+      "to": 1765220758470,
+      "type": "like"
+    },
+    {
+      "id": 1765483930847,
+      "from": 1765227860788,
+      "to": 1765220851949,
       "type": "like"
     }
   ],
-  "matches": [],
-  "messages": []
+  "matches": [
+    {
+      "id": 1765482731001,
+      "user1": 1765227860788,
+      "user2": 1765220758470,
+      "createdAt": "2025-12-11T19:52:11.001Z"
+    }
+  ],
+  "messages": [
+    {
+      "id": 1765479211024,
+      "matchId": "1",
+      "sender": 1765227860788,
+      "text": "khjgkjhg",
+      "createdAt": "2025-12-11T18:53:31.024Z"
+    },
+    {
+      "id": 1765479266487,
+      "matchId": "1",
+      "sender": 1765220758470,
+      "text": "it works!",
+      "createdAt": "2025-12-11T18:54:26.487Z"
+    },
+    {
+      "id": 1765483879689,
+      "matchId": 1765482731001,
+      "sender": 1765227860788,
+      "text": "ashdhasd",
+      "createdAt": "2025-12-11T20:11:19.689Z"
+    }
+  ]
 }
