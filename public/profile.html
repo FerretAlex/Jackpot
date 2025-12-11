@@ -4,6 +4,26 @@
   <meta charset="UTF-8">
   <title>Profile — Jackpot</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .chip-base {
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+      border-radius: 9999px;
+      border: 1px solid rgb(186 230 253);
+      background-color: rgb(240 249 255);
+      color: rgb(15 23 42);
+      cursor: pointer;
+      transition: background-color .15s ease, color .15s ease, border-color .15s ease, transform .1s ease;
+    }
+    .chip-base:hover {
+      transform: translateY(-1px);
+    }
+    .chip-active {
+      background-color: rgb(14 165 233);
+      border-color: rgb(2 132 199);
+      color: white;
+    }
+  </style>
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col">
 <nav class="bg-white shadow-sm">
@@ -17,18 +37,24 @@
   <div class="max-w-4xl mx-auto px-4 py-8">
     <h1 class="text-xl font-semibold text-slate-900 mb-4">My profile</h1>
 
+    <!-- Основная информация -->
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex flex-col sm:flex-row sm:items-center sm:space-x-6">
       <img id="avatar" src="default-avatar.png" class="w-24 h-24 rounded-xl object-cover border border-slate-200 mb-4 sm:mb-0" alt="avatar">
       <div class="flex-1 space-y-1">
         <p id="name" class="text-base font-semibold text-slate-900">Name</p>
         <p id="email" class="text-sm text-slate-500">email@example.com</p>
-        <p class="text-xs text-slate-400 pt-2">This data is stored in a JSON-file <code>database.json</code>. It fits for studying or lab works.</p>
+        <p class="text-xs text-slate-400 pt-2">
+          This information can't be changed.
+        </p>
       </div>
     </div>
 
+    <!-- Аватар -->
     <div class="mt-6 bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
       <h2 class="text-sm font-semibold text-slate-800 mb-3">Update avatar</h2>
-      <p class="text-xs text-slate-500 mb-3">Choose an image (jpg/png), it will be stored in the folder <code>uploads</code>, and its route is stored in the JSON file.</p>
+      <p class="text-xs text-slate-500 mb-3">
+        Choose an image (jpg/png), it will be stored in the folder <code>uploads</code>, and its route is stored in the JSON file.
+      </p>
 
       <input id="file" type="file" class="text-xs text-slate-600 mb-3">
       <button onclick="uploadAvatar()" class="inline-flex items-center px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white text-xs font-medium rounded-lg">
@@ -38,47 +64,111 @@
       <p id="msg" class="text-xs text-emerald-600 mt-3 hidden"></p>
       <p id="err" class="text-xs text-red-500 mt-3 hidden"></p>
     </div>
-    <div class="mt-6 bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-      <h2 class="text-base font-semibold text-slate-900 mb-4 flex items-center gap-2">
-        <span class="w-1.5 h-1.5 bg-sky-500 rounded-full"></span>
-        Profile details
-      </h2>
 
+    <!-- Детали профиля + inline edit -->
+    <div class="mt-6 bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-base font-semibold text-slate-900 flex items-center gap-2">
+          <span class="w-1.5 h-1.5 bg-sky-500 rounded-full"></span>
+          Profile details
+        </h2>
+        <button id="editBtn"
+          class="text-xs px-3 py-1 bg-slate-200 hover:bg-slate-300 rounded-lg transition">
+          Edit
+        </button>
+      </div>
+
+      <!-- Поля: просмотр + скрытые инпуты -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+        <!-- Age -->
         <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
           <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Age</p>
-          <p id="age" class="text-slate-800 font-medium">—</p>
+          <p id="ageView" class="text-slate-800 font-medium">—</p>
+          <input id="ageEdit" type="number"
+                 class="hidden w-full border border-slate-300 rounded-lg px-2 py-1 text-sm">
         </div>
 
+        <!-- Gender -->
         <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
           <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Gender</p>
-          <p id="gender" class="text-slate-800 font-medium">—</p>
+          <p id="genderView" class="text-slate-800 font-medium">—</p>
+          <select id="genderEdit"
+                  class="hidden w-full border border-slate-300 rounded-lg px-2 py-1 text-sm">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Prefer not say</option>
+          </select>
         </div>
 
+        <!-- Faculty -->
         <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
           <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Faculty</p>
-          <p id="faculty" class="text-slate-800 font-medium">—</p>
+          <p id="facultyView" class="text-slate-800 font-medium">—</p>
+          <select id="facultyEdit"
+                 class="hidden w-full border border-slate-300 rounded-lg px-2 py-1 text-sm">
+                 <option value="">Select faculty</option>
+          <option value="Engineering">Faculty of Civil and Mechanical Engineering</option>
+          <option value="NaturalSciences">Faculty of Natural Sciences and Technology</option>
+          <option value="IT">Faculty of Computer Science, Information Technology and Energy</option>
+          <option value="Economics">Faculty of Engineering Economics and Management</option>
+          <option value="Management">Institute of Architecture and Design</option>
+          <option value="Architecture">Riga Business School</option>
+          <option value="MaritimeAcademy">Latvian Maritime Academy of Riga Technical University</option>
+          <option value="Liepaja">RTU Liepaja</option>
+          <option value="Rezekne">RTU Rezekne</option>
+          </select>
         </div>
 
+        <!-- Course -->
         <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
           <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Course</p>
-          <p id="course" class="text-slate-800 font-medium">—</p>
+          <p id="courseView" class="text-slate-800 font-medium">—</p>
+          <select id="courseEdit" type="number"
+                 class="hidden w-full border border-slate-300 rounded-lg px-2 py-1 text-sm">
+                 <option value="">Select your course</option>
+          <option value="1">Bachelor 1</option>
+          <option value="2">Bachelor 2</option>
+          <option value="3">Bachelor 3</option>
+          <option value="4">Bachelor 4</option>
+          <option value="5">Master 1</option>
+          <option value="6">Master 2</option>
+          <option value="7">PhD</option>
+        </select>
         </div>
       </div>
 
+      <!-- Interests: чипы -->
       <div class="mt-6">
         <p class="text-slate-500 text-xs uppercase tracking-wide mb-2">Interests</p>
         <div id="interestsBox" class="flex flex-wrap gap-2"></div>
       </div>
 
+      <!-- About -->
       <div class="mt-6">
         <p class="text-slate-500 text-xs uppercase tracking-wide mb-2">About me</p>
-        <p id="about" class="text-slate-700 bg-slate-50 border border-slate-200 rounded-xl p-4 leading-relaxed min-h-[60px]">—</p>
+        <p id="aboutView" class="text-slate-700 bg-slate-50 border border-slate-200 rounded-xl p-4 leading-relaxed min-h-[60px]">
+          —
+        </p>
+        <textarea id="aboutEdit" rows="3"
+          class="hidden w-full border border-slate-300 rounded-lg px-3 py-2 text-sm mt-1"></textarea>
       </div>
+
+      <!-- Кнопки сохранения / отмены -->
+      <div id="editButtons" class="hidden mt-6 flex gap-3">
+        <button onclick="saveInline()"
+          class="px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white text-sm rounded-lg">
+          Save
+        </button>
+        <button onclick="cancelInline()"
+          class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-sm rounded-lg">
+          Cancel
+        </button>
+      </div>
+
+      <p id="editMsg" class="text-xs text-emerald-600 mt-3 hidden"></p>
     </div>
 
   </div>
-
 </main>
 
 <script>
@@ -86,6 +176,28 @@ const token = localStorage.getItem("token");
 if (!token) {
   window.location.href = "login.html";
 }
+
+let editMode = false;
+let currentInterests = [];
+
+const ALL_INTERESTS = ["sports", "music", "movies", "BoardGaming", "CompGaming", "travel", "food","astrology","science","art"];
+const INTEREST_LABELS = {
+  sports: "Sport",
+  music: "Music",
+  movies: "Movies",
+  gaming: "Board games",
+  science: "Computer games",
+  travel: "Travel",
+  food: "Food",
+  astrology: "Astrology",
+  science: "Science",
+  art: "Art"
+};
+const GENDER_LABELS = {
+  male: "Male",
+  female: "Female",
+  other: "Prefer not to say"
+};
 
 async function loadProfile() {
   const res = await fetch("/api/me", {
@@ -100,43 +212,156 @@ async function loadProfile() {
 
   const me = await res.json();
 
-  document.getElementById("name").textContent = me.name || "Без имени";
+  // Основное
+  document.getElementById("name").textContent = me.name || "No name";
   document.getElementById("email").textContent = me.email;
   document.getElementById("avatar").src = me.avatar || "default-avatar.png";
 
-  document.getElementById("age").textContent = me.age || "—";
-  document.getElementById("gender").textContent =
-    me.gender ? capitalize(me.gender) : "—";
-  document.getElementById("faculty").textContent = me.faculty || "—";
-  document.getElementById("course").textContent = me.course || "—";
+  // Age
+  document.getElementById("ageView").textContent = me.age ?? "—";
+  document.getElementById("ageEdit").value = me.age ?? "";
 
-  // Interests (chips)
-  const interestsBox = document.getElementById("interestsBox");
-  interestsBox.innerHTML = "";
+  // Gender
+  const genderLabel = me.gender ? (GENDER_LABELS[me.gender] || me.gender) : "—";
+  document.getElementById("genderView").textContent = genderLabel;
+  document.getElementById("genderEdit").value = me.gender || "";
 
-  if (me.interests && me.interests.length) {
-    me.interests.forEach(item => {
-      const chip = document.createElement("span");
-      chip.textContent = item;
-      chip.className =
-        "px-3 py-1 rounded-full bg-sky-100 text-sky-700 text-xs font-medium border border-sky-200";
-      interestsBox.appendChild(chip);
-    });
-  } else {
-    const empty = document.createElement("span");
-    empty.textContent = "—";
-    empty.className = "text-slate-500";
-    interestsBox.appendChild(empty);
-  }
+  // Faculty
+  document.getElementById("facultyView").textContent = me.faculty || "—";
+  document.getElementById("facultyEdit").value = me.faculty || "";
+
+  // Course
+  document.getElementById("courseView").textContent = me.course ?? "—";
+  document.getElementById("courseEdit").value = me.course ?? "";
 
   // About
-  document.getElementById("about").textContent = me.about || "—";
+  document.getElementById("aboutView").textContent = me.about || "—";
+  document.getElementById("aboutEdit").value = me.about || "";
+
+  // Interests
+  currentInterests = Array.isArray(me.interests) ? me.interests : [];
+  renderInterests();
 }
 
-function capitalize(s) {
-  return s.charAt(0).toUpperCase() + s.slice(1);
+function renderInterests() {
+  const box = document.getElementById("interestsBox");
+  box.innerHTML = "";
+
+  // Основные интересы
+  ALL_INTERESTS.forEach(value => {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.dataset.value = value;
+    chip.textContent = INTEREST_LABELS[value] || value;
+    chip.className = "chip-base" + (currentInterests.includes(value) ? " chip-active" : "");
+    chip.addEventListener("click", () => {
+      if (!editMode) return;
+
+      if (currentInterests.includes(value)) {
+        currentInterests = currentInterests.filter(x => x !== value);
+        chip.classList.remove("chip-active");
+      } else {
+        currentInterests.push(value);
+        chip.classList.add("chip-active");
+      }
+    });
+    box.appendChild(chip);
+  });
+
+  // Дополнительные (если есть интересы, которых нет в ALL_INTERESTS)
+  const extra = currentInterests.filter(x => !ALL_INTERESTS.includes(x));
+  extra.forEach(value => {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.dataset.value = value;
+    chip.textContent = value;
+    chip.className = "chip-base chip-active";
+    chip.addEventListener("click", () => {
+      if (!editMode) return;
+      currentInterests = currentInterests.filter(x => x !== value);
+      chip.classList.remove("chip-active");
+    });
+    box.appendChild(chip);
+  });
+
+  if (ALL_INTERESTS.length === 0 && currentInterests.length === 0) {
+    const empty = document.createElement("span");
+    empty.textContent = "—";
+    empty.className = "text-slate-500 text-sm";
+    box.appendChild(empty);
+  }
 }
 
+function enableInlineEdit() {
+  editMode = true;
+  document.getElementById("editButtons").classList.remove("hidden");
+
+  toggleFieldToEdit("age");
+  toggleFieldToEdit("gender");
+  toggleFieldToEdit("faculty");
+  toggleFieldToEdit("course");
+  toggleFieldToEdit("about");
+}
+
+function toggleFieldToEdit(field) {
+  const viewEl = document.getElementById(field + "View");
+  const editEl = document.getElementById(field + "Edit");
+  if (!viewEl || !editEl) return;
+  viewEl.classList.add("hidden");
+  editEl.classList.remove("hidden");
+}
+
+function toggleFieldToView(field) {
+  const viewEl = document.getElementById(field + "View");
+  const editEl = document.getElementById(field + "Edit");
+  if (!viewEl || !editEl) return;
+  editEl.classList.add("hidden");
+  viewEl.classList.remove("hidden");
+}
+
+function cancelInline() {
+  editMode = false;
+  document.getElementById("editButtons").classList.add("hidden");
+  // Вернуть всё к данным с сервера
+  loadProfile();
+}
+
+async function saveInline() {
+  const msg = document.getElementById("editMsg");
+  msg.classList.add("hidden");
+  msg.textContent = "";
+
+  const payload = {
+    age: Number(document.getElementById("ageEdit").value),
+    gender: document.getElementById("genderEdit").value,
+    faculty: document.getElementById("facultyEdit").value,
+    course: Number(document.getElementById("courseEdit").value),
+    interests: currentInterests,
+    about: document.getElementById("aboutEdit").value
+  };
+
+  const res = await fetch("/api/update-profile", {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer " + token,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  });
+
+  const data = await res.json();
+
+  if (data.status === "ok") {
+    msg.textContent = "Profile updated.";
+    msg.classList.remove("hidden");
+    editMode = false;
+    document.getElementById("editButtons").classList.add("hidden");
+    await loadProfile();
+  } else if (data.error) {
+    msg.textContent = data.error;
+    msg.classList.remove("hidden");
+  }
+}
 
 async function uploadAvatar() {
   const fileInput = document.getElementById("file");
@@ -177,7 +402,9 @@ function logout() {
   window.location.href = "login.html";
 }
 
+// Инициализация
 loadProfile();
+document.getElementById("editBtn").addEventListener("click", enableInlineEdit);
 </script>
 </body>
 </html>
