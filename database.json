@@ -5,21 +5,60 @@
       "email": "vardul2003@gmail.com",
       "password": "$2b$10$rkw5mUIpOyQelOp3BEJy7.yYGCqT3ZojkM/AZ/7ywFyhqzpVT6LdG",
       "name": "Natella",
-      "avatar": "/uploads/1765220794554.jpg"
+      "avatar": "/uploads/1765220794554.jpg",
+      "age": 22,
+      "gender": "female",
+      "faculty": "Humanities",
+      "course": 1,
+      "interests": [
+        "movies"
+      ],
+      "about": "Бла-бла-бла"
     },
     {
       "id": 1765220851949,
       "email": "vardul@gmail.com",
       "password": "$2b$10$9yIf0YHBEEcC3BagnELjGuEv0JGg2RHV9utIYHN4I9Q8zMpTa8EH.",
       "name": "Natella 2",
-      "avatar": null
+      "avatar": null,
+      "age": 23,
+      "gender": "female",
+      "faculty": "IT",
+      "course": 2,
+      "interests": [
+        "sports"
+      ],
+      "about": "Бла-бла-бла"
     },
     {
       "id": 1765227860788,
       "email": "cole.fodork@gmail.com",
       "password": "$2b$10$jnoXSjLVjXVnlI58SuQM2eTULtkw6YkJAL.dIpjKBXP635GmyvrVC",
       "name": "Sasha",
-      "avatar": null
+      "avatar": null,
+      "age": 23,
+      "gender": "female",
+      "faculty": "IT",
+      "course": 2,
+      "interests": [
+        "sports"
+      ],
+      "about": "Бла-бла-бла"
+    }
+    {
+      "id": 1765481780766,
+      "email": "jane.doe@gmail.com",
+      "password": "$2b$10$TTt.OW55F8AxJEJVhRr3TOhVwvXbGQnKPyYZYTrNaa31nszxqMShi",
+      "name": "Jane",
+      "avatar": null,
+      "age": 23,
+      "gender": "female",
+      "faculty": "IT",
+      "course": 2,
+      "interests": [
+        "sports"
+      ],
+      "about": "Бла-бла-бла"
     }
   ],
   "swipes": [
