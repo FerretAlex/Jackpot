@@ -41,7 +41,7 @@ function auth(req, res, next) {
 // Регистрация
 app.post("/api/register", async (req, res) => {
   const db = loadDB();
-  const { email, password, name } = req.body;
+  const { email, password, name, age, gender, faculty, course, interests, about } = req.body;
 
   if (!email || !password) {
     return res.json({ error: "Email и пароль обязательны" });
@@ -52,13 +52,21 @@ app.post("/api/register", async (req, res) => {
   }
 
   const hash = await bcrypt.hash(password, 10);
+
   const user = {
     id: Date.now(),
     email,
     password: hash,
-    name: name || "",
-    avatar: null
+    name,
+    avatar: null,
+    age,
+    gender,
+    faculty,
+    course,
+    interests: interests || [],
+    about: about || ""
   };
+
   db.users.push(user);
   saveDB(db);
 
@@ -83,21 +91,28 @@ app.post("/api/login", async (req, res) => {
 // Текущий пользователь
 app.get("/api/me", auth, (req, res) => {
   const db = loadDB();
-  const user = db.users.find((u) => u.id === req.userId);
+  const user = db.users.find((u) => Number(u.id) === Number(req.userId));
+
   if (!user) return res.status(404).json({ error: "User not found" });
 
   res.json({
     id: user.id,
     email: user.email,
     name: user.name,
-    avatar: user.avatar
+    avatar: user.avatar,
+    age: user.age,
+    gender: user.gender,
+    faculty: user.faculty,
+    course: user.course,
+    interests: user.interests,
+    about: user.about
   });
 });
 
 // Загрузка аватара
 app.post("/api/upload-avatar", auth, upload.single("avatar"), (req, res) => {
   const db = loadDB();
-  const user = db.users.find((u) => u.id === req.userId);
+  const user = db.users.find((u) => Number(u.id) === Number(req.userId));
   if (!user) return res.status(404).json({ error: "User not found" });
 
   user.avatar = "/uploads/" + req.file.filename;
@@ -109,14 +124,25 @@ app.post("/api/upload-avatar", auth, upload.single("avatar"), (req, res) => {
 // Список других пользователей
 app.get("/api/users", auth, (req, res) => {
   const db = loadDB();
+  const myId = Number(req.userId);
+
+  const ratedIds = db.swipes
+    .filter(s => Number(s.from) === myId)
+    .map(s => Number(s.to));
+
   const list = db.users
-    .filter((u) => u.id !== req.userId)
-    .map((u) => ({
+    .filter(u => Number(u.id) !== myId)
+    .filter(u => !ratedIds.includes(Number(u.id)))
+    .map(u => ({
       id: u.id,
       email: u.email,
       name: u.name,
-      avatar: u.avatar
+      avatar: u.avatar,
+      age: u.age,
+      gender: u.gender,
+      faculty: u.faculty
     }));
+
   res.json(list);
 });
 
