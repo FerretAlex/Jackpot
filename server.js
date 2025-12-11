@@ -109,35 +109,25 @@ app.post("/api/upload-avatar", auth, upload.single("avatar"), (req, res) => {
 // Список других пользователей
 app.get("/api/users", auth, (req, res) => {
   const db = loadDB();
-  const myId = Number(req.userId);
-
-  // ID тех, кого я уже оценил
-  const ratedIds = db.swipes
-    .filter(s => Number(s.from) === myId)
-    .map(s => Number(s.to));
-
   const list = db.users
-    .filter(u => Number(u.id) !== myId)
-    .filter(u => !ratedIds.includes(Number(u.id)))
-    .map(u => ({
+    .filter((u) => u.id !== req.userId)
+    .map((u) => ({
       id: u.id,
       email: u.email,
       name: u.name,
       avatar: u.avatar
     }));
-
   res.json(list);
 });
 
-
-// Сохранение свайпа (лайк/дизлайк)
+// Сохранение свайпа (лайк/дизлайк) + создание матча/чата
 app.post("/api/swipe", auth, (req, res) => {
   const db = loadDB();
-  let { fromUserId, toUserId, swipeType } = req.body;
+  const fromUserId = Number(req.body.fromUserId);
+  const toUserId   = Number(req.body.toUserId);
+  const swipeType = req.body.swipeType;
 
-  // Приводим к числам
-  fromUserId = Number(fromUserId);
-  toUserId = Number(toUserId);
+  // Сохраняем свайп
 
   db.swipes.push({
     id: Date.now(),
@@ -145,27 +135,98 @@ app.post("/api/swipe", auth, (req, res) => {
     to: toUserId,
     type: swipeType
   });
-
   saveDB(db);
+
+  // Проверяем: если лайк — ищем обратный лайк
+  if (swipeType === "like") {
+    let reverseLike = db.swipes.find(
+      (s) =>
+        s.from === toUserId &&
+        s.to === fromUserId &&
+        s.type === "like"
+    );
+
+    if (reverseLike) {
+      // Проверяем — не создан ли матч раньше
+      let match = db.matches.find(
+        (m) =>
+          (m.user1 === fromUserId && m.user2 === toUserId) ||
+          (m.user1 === toUserId && m.user2 === fromUserId)
+      );
+
+      if (!match) {
+        // Создаем НОВЫЙ MATCH + чат
+        match = {
+          id: Date.now(),
+          user1: fromUserId,
+          user2: toUserId,
+          createdAt: new Date().toISOString()
+        };
+
+        db.matches.push(match);
+        saveDB(db);
+
+        return res.json({
+          status: "match",
+          matchId: match.id
+        });
+      }
+
+      // Если матч уже существовал — просто вернуть matchId
+      saveDB(db);
+      return res.json({
+        status: "already_matched",
+        matchId: match.id
+      });
+    }
+  }
+
   res.json({ status: "ok" });
 });
+
+
 
 // Сообщения чата по matchId (для простоты один общий matchId=1)
 app.get("/api/chat/:matchId", auth, (req, res) => {
   const db = loadDB();
-  const matchId = req.params.matchId;
-  const msgs = db.messages.filter((m) => String(m.matchId) === String(matchId));
+  const matchId = Number(req.params.matchId);
+
+  // 1. Check match exists
+  const match = db.matches.find(m => m.id === matchId);
+  if (!match) {
+    return res.status(404).json({ error: "Match not found" });
+  }
+
+  // 2. Check user is part of the match
+  if (match.user1 !== req.userId && match.user2 !== req.userId) {
+    return res.status(403).json({ error: "Access denied" });
+  }
+
+  // 3. Return messages for this match
+  const msgs = db.messages.filter(m => m.matchId === matchId);
   res.json(msgs);
 });
 
 app.post("/api/chat/:matchId", auth, (req, res) => {
   const db = loadDB();
-  const matchId = req.params.matchId;
+  const matchId = Number(req.params.matchId);
   const { text } = req.body;
 
+  // 1. Validate match exists
+  const match = db.matches.find(m => m.id === matchId);
+  if (!match) {
+    return res.status(404).json({ error: "Match not found" });
+  }
+
+  // 2. Validate user belongs to match
+  if (match.user1 !== req.userId && match.user2 !== req.userId) {
+    return res.status(403).json({ error: "Access denied" });
+  }
+
+  // 3. Store the message
   db.messages.push({
     id: Date.now(),
-    matchId,
+    matchId: matchId,
     sender: req.userId,
     text,
     createdAt: new Date().toISOString()
