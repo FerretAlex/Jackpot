@@ -109,21 +109,35 @@ app.post("/api/upload-avatar", auth, upload.single("avatar"), (req, res) => {
 // Список других пользователей
 app.get("/api/users", auth, (req, res) => {
   const db = loadDB();
+  const myId = Number(req.userId);
+
+  // ID тех, кого я уже оценил
+  const ratedIds = db.swipes
+    .filter(s => Number(s.from) === myId)
+    .map(s => Number(s.to));
+
   const list = db.users
-    .filter((u) => u.id !== req.userId)
-    .map((u) => ({
+    .filter(u => Number(u.id) !== myId)
+    .filter(u => !ratedIds.includes(Number(u.id)))
+    .map(u => ({
       id: u.id,
       email: u.email,
       name: u.name,
       avatar: u.avatar
     }));
+
   res.json(list);
 });
+
 
 // Сохранение свайпа (лайк/дизлайк)
 app.post("/api/swipe", auth, (req, res) => {
   const db = loadDB();
-  const { fromUserId, toUserId, swipeType } = req.body;
+  let { fromUserId, toUserId, swipeType } = req.body;
+
+  // Приводим к числам
+  fromUserId = Number(fromUserId);
+  toUserId = Number(toUserId);
 
   db.swipes.push({
     id: Date.now(),
