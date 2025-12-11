@@ -109,6 +109,28 @@ app.get("/api/me", auth, (req, res) => {
   });
 });
 
+app.post("/api/update-profile", auth, (req, res) => {
+  const db = loadDB();
+  const user = db.users.find(u => Number(u.id) === Number(req.userId));
+
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  const { age, gender, faculty, course, interests, about } = req.body;
+
+  user.age = age ?? user.age;
+  user.gender = gender ?? user.gender;
+  user.faculty = faculty ?? user.faculty;
+  user.course = course ?? user.course;
+  user.interests = Array.isArray(interests) ? interests : user.interests;
+  user.about = about ?? user.about;
+
+  saveDB(db);
+
+  res.json({ status: "ok" });
+});
+
 // Загрузка аватара
 app.post("/api/upload-avatar", auth, upload.single("avatar"), (req, res) => {
   const db = loadDB();
