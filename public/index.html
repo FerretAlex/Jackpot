@@ -92,7 +92,7 @@ function renderUsers() {
 }
 
 async function swipe(toUserId, type) {
-  await fetch("/api/swipe", {
+  const res = await fetch("/api/swipe", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -105,6 +105,16 @@ async function swipe(toUserId, type) {
     })
   });
 
+  const data = await res.json();
+
+  // 👉 Handle match creation
+  if (data.status === "match" || data.status === "already_matched") {
+    localStorage.setItem("matchId", data.matchId);
+    window.location.href = "chat.html";   // go to chat
+    return; // stop here, do not continue swipe logic
+  }
+
+  // 👉 Otherwise, normal swipe — remove user from list
   users = users.filter(u => String(u.id) !== String(toUserId));
   renderUsers();
 }
