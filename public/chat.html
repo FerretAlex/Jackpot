@@ -34,7 +34,7 @@ const userId = Number(localStorage.getItem("userId"));
 if (!token) {
   window.location.href = "login.html";
 }
-const matchId = 1; 
+const matchId = Number(localStorage.getItem("matchId"));
 
 async function loadMessages() {
   const res = await fetch(`/api/chat/${matchId}`, {
