@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini Match - Matches</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col">
+<nav class="bg-white shadow-sm">
+  <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center space-x-2">
+      <div class="w-8 h-8 rounded-xl bg-sky-500 flex items-center justify-center text-white text-sm font-semibold">MM</div>
+      <span class="text-sm font-semibold text-slate-900">Mini Match</span>
+    </div>
+    <div class="flex items-center space-x-4 text-sm">
+      <a href="index.html" class="text-slate-600 hover:text-sky-600">Explore</a>
+      <a href="profile.html" class="text-slate-600 hover:text-sky-600">Profile</a>
+      <button onclick="logout()" class="text-slate-500 hover:text-red-500">Log-out</button>
+    </div>
+  </div>
+</nav>
+
+<main class="flex-1">
+  <div class="max-w-5xl mx-auto px-4 py-6">
+    <h1 class="text-xl font-semibold text-slate-900 mb-4">Your chats</h1>
+    <p class="text-sm text-slate-500 mb-6">Open a chat to start messaging.</p>
+
+    <div id="list" class="space-y-3"></div>
+    <p id="empty" class="text-sm text-slate-500 mt-4 hidden">You have no matches yet.</p>
+  </div>
+</main>
+
+<script>
+const token = localStorage.getItem("token");
+const meId = Number(localStorage.getItem("userId"));
+
+if (!token) window.location.href = "login.html";
+
+async function loadMatches() {
+  const list = document.getElementById('list');
+  const empty = document.getElementById('empty');
+  list.innerHTML = '';
+
+  const res = await fetch('/api/matches', {
+    headers: { 'Authorization': 'Bearer ' + token }
+  });
+
+  if (res.status === 401) {
+    localStorage.clear();
+    window.location.href = 'login.html';
+    return;
+  }
+
+  const matches = await res.json();
+
+  if (!matches.length) {
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+
+  matches.forEach(match => {
+    const other = (Number(match.user1) === meId) ? match.user2info : match.user1info;
+    const lastMsg = match.lastMessage || '';
+
+    const el = document.createElement('div');
+    
+    el.className = 'p-3 border rounded-lg mb-2 cursor-pointer bg-white flex items-center justify-between';
+    el.innerHTML = `
+      <div class="flex items-center space-x-3">
+        <img src="${other.avatar || 'default-avatar.png'}" onerror="this.src='default-avatar.png'" class="w-12 h-12 rounded-lg object-cover">
+        <div>
+          <div class="text-sm font-semibold text-slate-900">${other.name || 'No name'}</div>
+          <div class="text-xs text-slate-500 truncate max-w-[24rem]">${lastMsg}</div>
+        </div>
+      </div>
+      <div class="text-xs text-slate-400"> <button class="text-sky-500" onclick="openChat(event, ${match.id})">Open</button> </div>
+    `;
+    list.appendChild(el);
+  });
+}
+
+function openChat(e, id) {
+  if (e) e.stopPropagation();
+  window.location.href = `chat.html?matchId=${id}`;
+  console.log('Opening match', match.id, typeof match.id);
+}
+
+function logout() {
+  localStorage.clear();
+  window.location.href = 'login.html';
+}
+
+loadMatches();
+</script>
+</body>
+</html>

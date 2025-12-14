@@ -109,28 +109,6 @@ app.get("/api/me", auth, (req, res) => {
   });
 });
 
-app.post("/api/update-profile", auth, (req, res) => {
-  const db = loadDB();
-  const user = db.users.find(u => Number(u.id) === Number(req.userId));
-
-  if (!user) {
-    return res.status(404).json({ error: "User not found" });
-  }
-
-  const { age, gender, faculty, course, interests, about } = req.body;
-
-  user.age = age ?? user.age;
-  user.gender = gender ?? user.gender;
-  user.faculty = faculty ?? user.faculty;
-  user.course = course ?? user.course;
-  user.interests = Array.isArray(interests) ? interests : user.interests;
-  user.about = about ?? user.about;
-
-  saveDB(db);
-
-  res.json({ status: "ok" });
-});
-
 // Загрузка аватара
 app.post("/api/upload-avatar", auth, upload.single("avatar"), (req, res) => {
   const db = loadDB();
@@ -232,56 +210,120 @@ app.post("/api/swipe", auth, (req, res) => {
   res.json({ status: "ok" });
 });
 
-
-
-// Сообщения чата по matchId (для простоты один общий matchId=1)
-app.get("/api/chat/:matchId", auth, (req, res) => {
+//GET match info
+app.get("/api/match/:id", auth, (req, res) => {
   const db = loadDB();
-  const matchId = Number(req.params.matchId);
+  const matchId = Number(req.params.id);
+  const userId = Number(req.userId);
 
-  // 1. Check match exists
-  const match = db.matches.find(m => m.id === matchId);
+  console.log('MATCH route requested:', matchId);
+  console.log('MATCH route existing:', db.matches.map(m => m.id));
+
+  const match = db.matches.find(
+    m => Number(m.id) === matchId
+  );
+
   if (!match) {
     return res.status(404).json({ error: "Match not found" });
   }
 
-  // 2. Check user is part of the match
-  if (match.user1 !== req.userId && match.user2 !== req.userId) {
+  if (
+    Number(match.user1) !== userId &&
+    Number(match.user2) !== userId
+  ) {
+    return res.status(403).json({ error: "Access denied" });
+  }
+
+  const user1info = db.users.find(u => Number(u.id) === Number(match.user1));
+  const user2info = db.users.find(u => Number(u.id) === Number(match.user2));
+
+  res.json({ ...match, user1info, user2info });
+});
+
+// GET messages for a match
+app.get("/api/chat/:matchId", auth, (req, res) => {
+  const db = loadDB();
+  const matchId = Number(req.params.matchId);
+  const userId = Number(req.userId);
+
+  const match = db.matches.find(
+    m => Number(m.id) === matchId
+  );
+
+  if (!match) {
+    return res.status(404).json({ error: "Match not found" });
+  }
+
+  if (
+    Number(match.user1) !== userId &&
+    Number(match.user2) !== userId
+  ) {
     return res.status(403).json({ error: "Access denied" });
   }
 
   // 3. Return messages for this match
-  const msgs = db.messages.filter(m => m.matchId === matchId);
+  const msgs = db.messages
+    .filter(m => Number(m.matchId) === matchId)
+    .sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt)); // optional: chronological order
+
   res.json(msgs);
 });
 
+// POST a new message to a match
 app.post("/api/chat/:matchId", auth, (req, res) => {
   const db = loadDB();
-  const matchId = Number(req.params.matchId);
+  const matchId = Number(req.params.matchId); // ensure number
   const { text } = req.body;
 
   // 1. Validate match exists
-  const match = db.matches.find(m => m.id === matchId);
+  const match = db.matches.find(m => Number(m.id) === matchId);
   if (!match) {
     return res.status(404).json({ error: "Match not found" });
   }
 
   // 2. Validate user belongs to match
-  if (match.user1 !== req.userId && match.user2 !== req.userId) {
+  const userId = Number(req.userId);
+  if (Number(match.user1) !== userId && Number(match.user2) !== userId) {
     return res.status(403).json({ error: "Access denied" });
   }
 
+  if (!text || !text.trim()) {
+  return res.status(400).json({ error: "Empty message" });
+}
   // 3. Store the message
   db.messages.push({
-    id: Date.now(),
-    matchId: matchId,
-    sender: req.userId,
+    id: Date.now(),      // message ID as number
+    matchId: matchId,    // number
+    sender: userId,
     text,
     createdAt: new Date().toISOString()
   });
 
   saveDB(db);
   res.json({ status: "sent" });
+});
+
+// Authenteticating matches
+app.get("/api/matches", auth, (req, res) => {
+  const db = loadDB();
+  const userId = Number(req.userId);
+
+  const userMatches = db.matches
+    .filter(m =>
+      Number(m.user1) === userId || Number(m.user2) === userId
+    )
+    .map(m => {
+      const user1info = db.users.find(u => Number(u.id) === Number(m.user1));
+      const user2info = db.users.find(u => Number(u.id) === Number(m.user2));
+
+      const lastMessage = db.messages
+        .filter(msg => Number(msg.matchId) === Number(m.id))
+        .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt))[0]?.text || '';
+
+      return { ...m, user1info, user2info, lastMessage };
+    });
+
+  res.json(userMatches);
 });
 
 // Запуск
