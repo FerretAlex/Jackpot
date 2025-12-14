@@ -1,65 +1,127 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Chat</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chat — Jackpot</title>
+
+  <!-- Tailwind config BEFORE CDN -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            jp: {
+              bg: "#F7F7F5",
+              text: "#0F172A",
+              muted: "#475569",
+              card: "#FFFFFF",
+              border: "rgba(15, 23, 42, 0.10)",
+              gold: "#D4AF37",
+              gold2: "#FFD36A",
+              ink: "#111827"
+            }
+          },
+          boxShadow: {
+            soft: "0 12px 30px rgba(15, 23, 42, 0.08)",
+            lift: "0 18px 40px rgba(15, 23, 42, 0.12)"
+          }
+        }
+      }
+    }
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      background:
+        radial-gradient(900px 450px at 80% 0%, rgba(212,175,55,0.14), transparent 60%),
+        radial-gradient(700px 380px at 10% 10%, rgba(255,211,106,0.10), transparent 60%),
+        radial-gradient(rgba(15,23,42,0.06) 1px, transparent 1px);
+      background-size: auto, auto, 18px 18px;
+      background-position: 0 0, 0 0, 0 0;
+    }
+  </style>
 </head>
-<body class="bg-slate-50 min-h-screen flex flex-col">
-<nav class="bg-white shadow-sm">
-  <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
-    <a href="matches.html" class="text-sm text-slate-600 hover:text-sky-600">← Back</a>
-    <button onclick="logout()" class="text-sm text-slate-500 hover:text-red-500">Exit</button>
-  </div>
-</nav>
 
-<main class="flex-1">
-  <div class="max-w-4xl mx-auto px-4 py-6 flex flex-col h-[calc(100vh-4rem-3rem)]">
-    <h1 id="chat-title" class="text-lg font-semibold text-slate-900 mb-4">Chat</h1>
+<body class="bg-jp-bg text-jp-text min-h-screen flex flex-col antialiased">
+  <!-- Top bar -->
+  <nav class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b border-jp-border">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="matches.html" class="text-sm text-jp-muted hover:text-jp-text">← Back</a>
 
-    <div id="messages" class="flex-1 bg-white rounded-2xl shadow-sm border border-slate-100 p-4 overflow-y-auto space-y-2 text-sm"></div>
-
-    <div class="mt-4 flex space-x-2">
-      <input id="msg-input" type="text" class="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400" placeholder="Введите сообщение...">
-      <button id="send-btn" class="px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-medium rounded-lg">Send</button>
+      <div class="flex items-center gap-4 text-sm">
+        <a href="index.html" class="text-jp-muted hover:text-jp-text">Users</a>
+        <button onclick="logout()" class="text-jp-muted hover:text-red-600">Exit</button>
+      </div>
     </div>
-  </div>
-</main>
+  </nav>
+
+  <main class="flex-1">
+    <div class="max-w-5xl mx-auto px-4 py-6 flex flex-col h-[calc(100vh-56px)]">
+      <div class="flex items-end justify-between gap-4 mb-4">
+        <div>
+          <h1 id="chat-title" class="text-lg font-semibold">Chat</h1>
+          <p class="text-sm text-jp-muted">Keep it respectful.</p>
+        </div>
+
+        <span class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-jp-border bg-white text-xs text-jp-muted shadow-soft">
+          <span class="inline-block w-2 h-2 rounded-full" style="background: rgba(212,175,55,0.9)"></span>
+          Jackpot chat
+        </span>
+      </div>
+
+      <!-- Messages panel -->
+      <div id="messages"
+           class="flex-1 bg-jp-card rounded-2xl shadow-soft border border-jp-border p-4 overflow-y-auto space-y-2 text-sm">
+      </div>
+
+      <!-- Composer -->
+      <div class="mt-4 flex gap-2 items-center">
+        <input id="msg-input" type="text"
+               class="flex-1 rounded-xl border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
+                      focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]"
+               placeholder="Введите сообщение..." />
+
+        <button id="send-btn"
+                class="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-[#C9A227]
+                       hover:brightness-95 active:translate-y-px transition shadow-soft">
+          Send
+        </button>
+      </div>
+    </div>
+  </main>
 
 <script>
 const token = localStorage.getItem("token");
 const meId = Number(localStorage.getItem("userId"));
+if (!token) window.location.href = "login.html";
 
-if (!token) window.location.href = 'login.html';
-
-// ✅ get matchId from URL
+// get matchId from URL
 const params = new URLSearchParams(window.location.search);
-const matchId = Number(params.get('matchId'));
+const matchId = Number(params.get("matchId"));
 
 if (!matchId) {
-  alert('Match not specified');
-  window.location.href = 'matches.html';
+  alert("Match not specified");
+  window.location.href = "matches.html";
 }
 
 // ---------------- MATCH INFO ----------------
 async function loadMatchInfo() {
   const res = await fetch(`/api/match/${matchId}`, {
-    headers: { 'Authorization': 'Bearer ' + token }
+    headers: { "Authorization": "Bearer " + token }
   });
 
   if (!res.ok) {
-    alert('Match not found');
-    window.location.href = 'matches.html';
+    alert("Match not found");
+    window.location.href = "matches.html";
     return;
   }
 
   const match = await res.json();
-  const other = (Number(match.user1) === meId)
-    ? match.user2info
-    : match.user1info;
+  const other = (Number(match.user1) === meId) ? match.user2info : match.user1info;
 
-  document.getElementById('chat-title').textContent =
-    other?.name || 'Chat';
+  document.getElementById("chat-title").textContent = other?.name || "Chat";
 }
 
 // ---------------- MESSAGES ----------------
@@ -71,9 +133,12 @@ function appendMessage(m) {
   wrap.className = "flex " + (mine ? "justify-end" : "justify-start");
 
   const bubble = document.createElement("div");
+  // Minimal, readable “Jackpot” styling: mine = warm gold tint, theirs = neutral
   bubble.className =
-    "px-3 py-2 rounded-xl max-w-[70%] " +
-    (mine ? "bg-sky-500 text-white" : "bg-slate-100 text-slate-900");
+    "px-3 py-2 rounded-2xl max-w-[75%] border " +
+    (mine
+      ? "bg-[rgba(212,175,55,0.18)] border-[rgba(212,175,55,0.45)] text-jp-ink"
+      : "bg-white border-jp-border text-jp-text");
 
   bubble.textContent = m.text;
 
@@ -84,7 +149,7 @@ function appendMessage(m) {
 
 async function loadMessages() {
   const res = await fetch(`/api/chat/${matchId}`, {
-    headers: { 'Authorization': 'Bearer ' + token }
+    headers: { "Authorization": "Bearer " + token }
   });
 
   if (!res.ok) return;
@@ -92,7 +157,6 @@ async function loadMessages() {
   const msgs = await res.json();
   const box = document.getElementById("messages");
   box.innerHTML = "";
-
   msgs.forEach(appendMessage);
 }
 
@@ -101,6 +165,9 @@ async function sendMessage() {
   const input = document.getElementById("msg-input");
   const text = input.value.trim();
   if (!text) return;
+
+  // optimistic UI (быстрее ощущается)
+  appendMessage({ sender: meId, text });
 
   const res = await fetch(`/api/chat/${matchId}`, {
     method: "POST",
@@ -113,22 +180,24 @@ async function sendMessage() {
 
   if (res.ok) {
     input.value = "";
-    loadMessages(); // remove later if using WebSockets
+    // refresh to sync with server (remove later when WebSockets)
+    loadMessages();
   } else {
-    alert('Failed to send message');
+    alert("Failed to send message");
+    loadMessages();
   }
 }
 
 // ---------------- LOGOUT ----------------
 function logout() {
   localStorage.clear();
-  window.location.href = 'login.html';
+  window.location.href = "login.html";
 }
 
 // ---------------- EVENTS ----------------
-document.getElementById('send-btn').addEventListener('click', sendMessage);
-document.getElementById('msg-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') sendMessage();
+document.getElementById("send-btn").addEventListener("click", sendMessage);
+document.getElementById("msg-input").addEventListener("keydown", e => {
+  if (e.key === "Enter") sendMessage();
 });
 
 // ---------------- INIT ----------------
