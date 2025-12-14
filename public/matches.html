@@ -1,34 +1,103 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Mini Match - Matches</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jackpot - Matches</title>
+
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            jp: {
+              bg: "#F7F7F5",
+              text: "#0F172A",
+              muted: "#475569",
+              card: "#FFFFFF",
+              border: "rgba(15, 23, 42, 0.10)",
+              gold: "#D4AF37",
+              gold2: "#FFD36A",
+              ink: "#111827"
+            }
+          },
+          boxShadow: {
+            soft: "0 12px 30px rgba(15, 23, 42, 0.08)",
+            lift: "0 18px 40px rgba(15, 23, 42, 0.12)"
+          }
+        }
+      }
+    }
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      background:
+        radial-gradient(900px 450px at 80% 0%, rgba(212,175,55,0.14), transparent 60%),
+        radial-gradient(700px 380px at 10% 10%, rgba(255,211,106,0.10), transparent 60%),
+        radial-gradient(rgba(15,23,42,0.06) 1px, transparent 1px);
+      background-size: auto, auto, 18px 18px;
+      background-position: 0 0, 0 0, 0 0;
+    }
+  </style>
 </head>
-<body class="bg-slate-50 min-h-screen flex flex-col">
-<nav class="bg-white shadow-sm">
-  <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-    <div class="flex items-center space-x-2">
-      <div class="w-8 h-8 rounded-xl bg-sky-500 flex items-center justify-center text-white text-sm font-semibold">MM</div>
-      <span class="text-sm font-semibold text-slate-900">Mini Match</span>
-    </div>
-    <div class="flex items-center space-x-4 text-sm">
-      <a href="index.html" class="text-slate-600 hover:text-sky-600">Explore</a>
-      <a href="profile.html" class="text-slate-600 hover:text-sky-600">Profile</a>
-      <button onclick="logout()" class="text-slate-500 hover:text-red-500">Log-out</button>
-    </div>
-  </div>
-</nav>
 
-<main class="flex-1">
-  <div class="max-w-5xl mx-auto px-4 py-6">
-    <h1 class="text-xl font-semibold text-slate-900 mb-4">Your chats</h1>
-    <p class="text-sm text-slate-500 mb-6">Open a chat to start messaging.</p>
+<body class="bg-jp-bg text-jp-text min-h-screen flex flex-col antialiased">
+  <nav class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b border-jp-border">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      <!-- Brand -->
+      <div class="flex items-center gap-3">
+        <div class="leading-tight">
+          <div class="flex items-center gap-2">
+            <span class="text-sm font-semibold tracking-wide">Jackpot</span>
+            
+          </div>
+          <p class="text-[12px] text-jp-muted">Your chats and last messages</p>
+        </div>
+      </div>
 
-    <div id="list" class="space-y-3"></div>
-    <p id="empty" class="text-sm text-slate-500 mt-4 hidden">You have no matches yet.</p>
-  </div>
-</main>
+      <!-- Links -->
+      <div class="flex items-center gap-4 text-sm">
+        <a href="index.html" class="text-jp-muted hover:text-jp-text">Explore</a>
+        <a href="profile.html" class="text-jp-muted hover:text-jp-text">Profile</a>
+        <button onclick="logout()" class="text-jp-muted hover:text-red-600">Log-out</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="flex-1">
+    <div class="max-w-5xl mx-auto px-4 py-6">
+      <div class="flex items-end justify-between gap-4 mb-6">
+        <div>
+          <h1 class="text-xl font-semibold">Your chats</h1>
+          <p class="text-sm text-jp-muted mt-1">Open a chat to start messaging.</p>
+        </div>
+
+        <div class="hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl bg-white border border-jp-border shadow-soft">
+          <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-jp-ink text-xs font-bold"
+                style="background: rgba(212,175,55,0.18); border: 1px solid rgba(212,175,55,0.45);">
+            ✓
+          </span>
+          <div class="leading-tight">
+            <p class="text-xs font-semibold">Matches</p>
+            <p class="text-[11px] text-jp-muted"><span id="count">0</span> total</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="list" class="space-y-3"></div>
+      <p id="empty" class="text-sm text-jp-muted mt-4 hidden">You have no matches yet.</p>
+    </div>
+  </main>
+
+  <footer class="mt-auto border-t border-jp-border bg-white/70 backdrop-blur">
+    <div class="max-w-5xl mx-auto px-4 py-4 text-xs text-jp-muted flex items-center justify-between gap-3">
+      <p>© <span id="year"></span> Jackpot</p>
+      <p class="text-right">December, 2025</p>
+    </div>
+  </footer>
 
 <script>
 const token = localStorage.getItem("token");
@@ -36,46 +105,71 @@ const meId = Number(localStorage.getItem("userId"));
 
 if (!token) window.location.href = "login.html";
 
-async function loadMatches() {
-  const list = document.getElementById('list');
-  const empty = document.getElementById('empty');
-  list.innerHTML = '';
+function setCount(n) {
+  const el = document.getElementById("count");
+  if (el) el.textContent = String(n);
+}
 
-  const res = await fetch('/api/matches', {
-    headers: { 'Authorization': 'Bearer ' + token }
+async function loadMatches() {
+  const list = document.getElementById("list");
+  const empty = document.getElementById("empty");
+  list.innerHTML = "";
+
+  const res = await fetch("/api/matches", {
+    headers: { "Authorization": "Bearer " + token }
   });
 
   if (res.status === 401) {
     localStorage.clear();
-    window.location.href = 'login.html';
+    window.location.href = "login.html";
     return;
   }
 
   const matches = await res.json();
+  setCount(matches.length);
 
   if (!matches.length) {
-    empty.classList.remove('hidden');
+    empty.classList.remove("hidden");
     return;
   }
-  empty.classList.add('hidden');
+  empty.classList.add("hidden");
 
   matches.forEach(match => {
     const other = (Number(match.user1) === meId) ? match.user2info : match.user1info;
-    const lastMsg = match.lastMessage || '';
+    const lastMsg = match.lastMessage || "";
 
-    const el = document.createElement('div');
-    
-    el.className = 'p-3 border rounded-lg mb-2 cursor-pointer bg-white flex items-center justify-between';
+    const el = document.createElement("div");
+    el.className =
+      "group p-3 sm:p-4 bg-jp-card border border-jp-border rounded-2xl shadow-soft " +
+      "hover:shadow-lift transition-shadow cursor-pointer flex items-center justify-between gap-3";
+
+    el.addEventListener("click", () => openChat(null, match.id));
+
     el.innerHTML = `
-      <div class="flex items-center space-x-3">
-        <img src="${other.avatar || 'default-avatar.png'}" onerror="this.src='default-avatar.png'" class="w-12 h-12 rounded-lg object-cover">
-        <div>
-          <div class="text-sm font-semibold text-slate-900">${other.name || 'No name'}</div>
-          <div class="text-xs text-slate-500 truncate max-w-[24rem]">${lastMsg}</div>
+      <div class="flex items-center gap-3 min-w-0">
+        <img
+          src="${other?.avatar || "default-avatar.png"}"
+          onerror="this.src='default-avatar.png'"
+          class="w-12 h-12 rounded-xl object-cover border border-jp-border flex-none"
+          alt="avatar"
+        />
+        <div class="min-w-0">
+          <div class="text-sm font-semibold text-jp-text truncate">${other?.name || "No name"}</div>
+          <div class="text-xs text-jp-muted truncate max-w-[28rem]">${escapeHtml(lastMsg)}</div>
         </div>
       </div>
-      <div class="text-xs text-slate-400"> <button class="text-sky-500" onclick="openChat(event, ${match.id})">Open</button> </div>
+
+      <div class="flex items-center gap-2 flex-none">
+        <button
+          class="px-3 py-1.5 rounded-xl text-sm font-semibold text-white bg-[#C9A227]
+                 hover:brightness-95 active:translate-y-px transition shadow-soft"
+          onclick="openChat(event, ${match.id})"
+        >
+          Open
+        </button>
+      </div>
     `;
+
     list.appendChild(el);
   });
 }
@@ -83,13 +177,25 @@ async function loadMatches() {
 function openChat(e, id) {
   if (e) e.stopPropagation();
   window.location.href = `chat.html?matchId=${id}`;
-  console.log('Opening match', match.id, typeof match.id);
 }
 
 function logout() {
   localStorage.clear();
-  window.location.href = 'login.html';
+  window.location.href = "login.html";
 }
+
+// simple HTML escape for last message (safety for display)
+function escapeHtml(str) {
+  return String(str)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+const y = document.getElementById("year");
+if (y) y.textContent = new Date().getFullYear();
 
 loadMatches();
 </script>
