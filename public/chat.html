@@ -8,72 +8,101 @@
 <body class="bg-slate-50 min-h-screen flex flex-col">
 <nav class="bg-white shadow-sm">
   <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
-    <a href="index.html" class="text-sm text-slate-600 hover:text-sky-600">← Back</a>
+    <a href="matches.html" class="text-sm text-slate-600 hover:text-sky-600">← Back</a>
     <button onclick="logout()" class="text-sm text-slate-500 hover:text-red-500">Exit</button>
   </div>
 </nav>
 
 <main class="flex-1">
   <div class="max-w-4xl mx-auto px-4 py-6 flex flex-col h-[calc(100vh-4rem-3rem)]">
-    <h1 class="text-lg font-semibold text-slate-900 mb-4">Prototype chat</h1>
+    <h1 id="chat-title" class="text-lg font-semibold text-slate-900 mb-4">Chat</h1>
 
     <div id="messages" class="flex-1 bg-white rounded-2xl shadow-sm border border-slate-100 p-4 overflow-y-auto space-y-2 text-sm"></div>
 
     <div class="mt-4 flex space-x-2">
       <input id="msg-input" type="text" class="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400" placeholder="Введите сообщение...">
-      <button onclick="sendMessage()" class="px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-medium rounded-lg">
-        Send
-      </button>
+      <button id="send-btn" class="px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-medium rounded-lg">Send</button>
     </div>
   </div>
 </main>
 
 <script>
 const token = localStorage.getItem("token");
-const userId = Number(localStorage.getItem("userId"));
-if (!token) {
-  window.location.href = "login.html";
+const meId = Number(localStorage.getItem("userId"));
+
+if (!token) window.location.href = 'login.html';
+
+// ✅ get matchId from URL
+const params = new URLSearchParams(window.location.search);
+const matchId = Number(params.get('matchId'));
+
+if (!matchId) {
+  alert('Match not specified');
+  window.location.href = 'matches.html';
 }
-const matchId = Number(localStorage.getItem("matchId"));
+
+// ---------------- MATCH INFO ----------------
+async function loadMatchInfo() {
+  const res = await fetch(`/api/match/${matchId}`, {
+    headers: { 'Authorization': 'Bearer ' + token }
+  });
+
+  if (!res.ok) {
+    alert('Match not found');
+    window.location.href = 'matches.html';
+    return;
+  }
+
+  const match = await res.json();
+  const other = (Number(match.user1) === meId)
+    ? match.user2info
+    : match.user1info;
+
+  document.getElementById('chat-title').textContent =
+    other?.name || 'Chat';
+}
+
+// ---------------- MESSAGES ----------------
+function appendMessage(m) {
+  const box = document.getElementById("messages");
+
+  const wrap = document.createElement("div");
+  const mine = Number(m.sender) === meId;
+  wrap.className = "flex " + (mine ? "justify-end" : "justify-start");
+
+  const bubble = document.createElement("div");
+  bubble.className =
+    "px-3 py-2 rounded-xl max-w-[70%] " +
+    (mine ? "bg-sky-500 text-white" : "bg-slate-100 text-slate-900");
+
+  bubble.textContent = m.text;
+
+  wrap.appendChild(bubble);
+  box.appendChild(wrap);
+  box.scrollTop = box.scrollHeight;
+}
 
 async function loadMessages() {
   const res = await fetch(`/api/chat/${matchId}`, {
-    headers: { "Authorization": "Bearer " + token }
+    headers: { 'Authorization': 'Bearer ' + token }
   });
 
-  if (res.status === 401) {
-    localStorage.clear();
-    window.location.href = "login.html";
-    return;
-  }
+  if (!res.ok) return;
 
   const msgs = await res.json();
   const box = document.getElementById("messages");
   box.innerHTML = "";
 
-  msgs.forEach(m => {
-    const wrap = document.createElement("div");
-    const mine = Number(m.sender) === userId;
-    wrap.className = "flex " + (mine ? "justify-end" : "justify-start");
-
-    const bubble = document.createElement("div");
-    bubble.className = "px-3 py-2 rounded-xl max-w-[70%] " +
-      (mine ? "bg-sky-500 text-white" : "bg-slate-100 text-slate-900");
-
-    bubble.textContent = m.text;
-    wrap.appendChild(bubble);
-    box.appendChild(wrap);
-  });
-
-  box.scrollTop = box.scrollHeight;
+  msgs.forEach(appendMessage);
 }
 
+// ---------------- SEND ----------------
 async function sendMessage() {
   const input = document.getElementById("msg-input");
   const text = input.value.trim();
   if (!text) return;
 
-  await fetch(`/api/chat/${matchId}`, {
+  const res = await fetch(`/api/chat/${matchId}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -82,17 +111,32 @@ async function sendMessage() {
     body: JSON.stringify({ text })
   });
 
-  input.value = "";
-  loadMessages();
+  if (res.ok) {
+    input.value = "";
+    loadMessages(); // remove later if using WebSockets
+  } else {
+    alert('Failed to send message');
+  }
 }
 
+// ---------------- LOGOUT ----------------
 function logout() {
   localStorage.clear();
-  window.location.href = "login.html";
+  window.location.href = 'login.html';
 }
 
-setInterval(loadMessages, 1500);
-loadMessages();
+// ---------------- EVENTS ----------------
+document.getElementById('send-btn').addEventListener('click', sendMessage);
+document.getElementById('msg-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') sendMessage();
+});
+
+// ---------------- INIT ----------------
+(async () => {
+  await loadMatchInfo();
+  await loadMessages();
+  setInterval(loadMessages, 1500); // remove when WebSockets enabled
+})();
 </script>
 </body>
 </html>
