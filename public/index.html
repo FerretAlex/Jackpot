@@ -1,130 +1,223 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Jackpot - users</title>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            jp: {
+              bg: "#F7F7F5",
+              text: "#0F172A",
+              muted: "#475569",
+              card: "#FFFFFF",
+              border: "rgba(15, 23, 42, 0.10)",
+              gold: "#D4AF37",
+              gold2: "#FFD36A",
+              ink: "#111827"
+            }
+          },
+          boxShadow: {
+            soft: "0 12px 30px rgba(15, 23, 42, 0.08)",
+            lift: "0 18px 40px rgba(15, 23, 42, 0.12)"
+          }
+        }
+      }
+    }
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      background:
+        radial-gradient(900px 450px at 80% 0%, rgba(212,175,55,0.14), transparent 60%),
+        radial-gradient(700px 380px at 10% 10%, rgba(255,211,106,0.10), transparent 60%),
+        radial-gradient(rgba(15,23,42,0.06) 1px, transparent 1px);
+      background-size: auto, auto, 18px 18px;
+      background-position: 0 0, 0 0, 0 0;
+    }
+  </style>
 </head>
-<body class="bg-slate-50 min-h-screen flex flex-col">
-<nav class="bg-white shadow-sm">
-  <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-    <div class="flex items-center space-x-2">
-      <div class="w-8 h-8 rounded-xl bg-sky-500 flex items-center justify-center text-white text-sm font-semibold">MM</div>
-      <span class="text-sm font-semibold text-slate-900">Mini Match</span>
-    </div>
-    <div class="flex items-center space-x-4 text-sm">
-      <a href="chat.html" class="text-slate-600 hover:text-sky-600">Chat (Match 1)</a>
-      <a href="profile.html" class="text-slate-600 hover:text-sky-600">Profile</a>
-      <button onclick="logout()" class="text-slate-500 hover:text-red-500">Log-out</button>
-    </div>
-  </div>
-</nav>
 
-<main class="flex-1">
-  <div class="max-w-5xl mx-auto px-4 py-6">
-    <h1 class="text-xl font-semibold text-slate-900 mb-4">Users nearby</h1>
-    <p class="text-sm text-slate-500 mb-6">Choose people you are interested in.</p>
-
-    <div id="users" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
-    <p id="empty" class="text-sm text-slate-500 mt-4 hidden">Still no users(</p>
-  </div>
-</main>
-
-<script>
-const token = localStorage.getItem("token");
-const meId = Number(localStorage.getItem("userId"));
-
-if (!token) {
-  window.location.href = "login.html";
-}
-
-let users = [];
-
-async function loadUsers() {
-  const res = await fetch("/api/users", {
-    headers: { "Authorization": "Bearer " + token }
-  });
-
-  if (res.status === 401) {
-    localStorage.clear();
-    window.location.href = "login.html";
-    return;
-  }
-
-  users = await res.json();
-  renderUsers();
-}
-
-function renderUsers() {
-  const container = document.getElementById("users");
-  const empty = document.getElementById("empty");
-
-  container.innerHTML = "";
-  if (!users.length) {
-    empty.classList.remove("hidden");
-    return;
-  } else {
-    empty.classList.add("hidden");
-  }
-
-  users.forEach(user => {
-    const card = document.createElement("div");
-    card.className = "bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col";
-
-    const avatarSrc = user.avatar || "default-avatar.png";
-
-    card.innerHTML = `
-      <img src="${avatarSrc}" onerror="this.src='default-avatar.png'" class="w-full h-40 object-cover">
-      <div class="p-4 flex-1 flex flex-col">
-        <div class="mb-1">
-          <p class="text-sm font-semibold text-slate-900">${user.name || "No name"}</p>
-          <p class="text-xs text-slate-500">${user.email}</p>
-        </div>
-        <div class="mt-auto pt-3 flex space-x-2">
-          <button class="flex-1 border border-slate-200 rounded-lg py-1.5 text-sm text-slate-600 hover:bg-slate-50" onclick="swipe('${user.id}','dislike')">Hide</button>
-          <button class="flex-1 bg-sky-500 hover:bg-sky-600 text-white text-sm rounded-lg py-1.5" onclick="swipe('${user.id}','like')">Like</button>
+<body class="bg-jp-bg text-jp-text min-h-screen flex flex-col antialiased">
+  <!-- Top bar -->
+  <nav class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b border-jp-border">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      
+      <div class="flex items-center gap-3">
+        
+        <div class="leading-tight">
+          <div class="flex items-center gap-2">
+            <span class="text-sm font-semibold tracking-wide">Jackpot</span>
+            
+          </div>
+          <p class="text-[12px] text-jp-muted">Find lucky matches</p>
         </div>
       </div>
-    `;
 
-    container.appendChild(card);
-  });
-}
+      <!-- Links -->
+      <div class="flex items-center gap-4 text-sm">
+        <a href="matches.html" class="text-jp-muted hover:text-jp-text">Chats</a>
+        <a href="profile.html" class="text-jp-muted hover:text-jp-text">Profile</a>
+        <button onclick="logout()" class="text-jp-muted hover:text-red-600">Log-out</button>
+      </div>
+    </div>
+  </nav>
 
-async function swipe(toUserId, type) {
-  const res = await fetch("/api/swipe", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + token
-    },
-    body: JSON.stringify({
-      fromUserId: meId,
-      toUserId,
-      swipeType: type
-    })
-  });
+  <!-- Main -->
+  <main class="flex-1">
+    <div class="max-w-5xl mx-auto px-4 py-6">
+      <div class="flex items-end justify-between gap-4 mb-6">
+        <div>
+          <h1 class="text-xl font-semibold">Choose people you are interested in</h1>
+          <p class="text-sm text-jp-muted mt-1">Check you luck in matching</p>
+        </div>
 
-  const data = await res.json();
+      </div>
 
-  // 👉 Handle match creation
-  if (data.status === "match" || data.status === "already_matched") {
-    localStorage.setItem("matchId", data.matchId);
-    window.location.href = "chat.html";   // go to chat
-    return; // stop here, do not continue swipe logic
-  }
+      <div id="users" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
+      <p id="empty" class="text-sm text-jp-muted mt-4 hidden">No more users...</p>
+    </div>
+  </main>
+<footer class="mt-auto border-t border-jp-border bg-white/70 backdrop-blur">
+    <div class="max-w-5xl mx-auto px-4 py-4 text-xs text-jp-muted flex items-center justify-between gap-3">
+      <p>© <span id="year"></span> Jackpot</p>
+      <p class="text-right">December, 2025</p>
+    </div>
+  </footer>
 
-  // 👉 Otherwise, normal swipe — remove user from list
-  users = users.filter(u => String(u.id) !== String(toUserId));
-  renderUsers();
-}
 
-function logout() {
-  localStorage.clear();
-  window.location.href = "login.html";
-}
+  <script>
+    const token = localStorage.getItem("token");
+    const meId = Number(localStorage.getItem("userId"));
 
-loadUsers();
-</script>
+    if (!token) {
+      window.location.href = "login.html";
+    }
+
+    let users = [];
+
+    async function loadUsers() {
+      const res = await fetch("/api/users", {
+        headers: { "Authorization": "Bearer " + token }
+      });
+
+      if (res.status === 401) {
+        localStorage.clear();
+        window.location.href = "login.html";
+        return;
+      }
+
+      users = await res.json();
+      renderUsers();
+    }
+
+    function setCount(n) {
+      const el = document.getElementById("count");
+      if (el) el.textContent = String(n);
+    }
+
+    function renderUsers() {
+      const container = document.getElementById("users");
+      const empty = document.getElementById("empty");
+
+      container.innerHTML = "";
+      setCount(users.length);
+
+      if (!users.length) {
+        empty.classList.remove("hidden");
+        return;
+      } else {
+        empty.classList.add("hidden");
+      }
+
+      users.forEach(user => {
+        const card = document.createElement("div");
+
+        
+        card.className =
+          "group rounded-2xl bg-jp-card border border-jp-border shadow-soft overflow-hidden flex flex-col " +
+          "hover:shadow-lift transition-shadow";
+
+        const avatarSrc = user.avatar || "default-avatar.png";
+
+        card.innerHTML = `
+          <div class="relative">
+            <img src="${avatarSrc}" onerror="this.src='default-avatar.png'" class="w-full h-40 object-cover">
+            
+            <!-- Subtle gold hover glow -->
+            <div class="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                 style="background: radial-gradient(600px 220px at 50% 0%, rgba(212,175,55,0.18), transparent 55%);">
+            </div>
+          </div>
+
+          <div class="p-4 flex-1 flex flex-col">
+            <div class="mb-1">
+              <p class="text-sm font-semibold text-jp-text">${user.name || "No name"}</p>
+              <p class="text-xs text-jp-muted truncate" title="${user.email}">${user.email}</p>
+            </div>
+
+            <div class="mt-auto pt-3 flex gap-2">
+              <button
+                    class="flex-1 rounded-lg py-1.5 text-sm  text-jp-ink
+                       bg-gradient-to-b from-jp-gold2 to-jp-gold
+                       hover :brightness-95 active:translate-y-px transition"                onclick="swipe('${user.id}','dislike')">
+                Hide
+              </button>
+
+              <button
+                class="flex-1 rounded-lg py-1.5 text-sm font-semibold border border-jp-border text-jp-muted hover:text-jp-text hover:border-[rgba(15,23,42,0.18)] transition-colors"
+
+        
+                onclick="swipe('${user.id}','like')">
+                Like
+              </button>
+            </div>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    async function swipe(toUserId, type) {
+      const res = await fetch("/api/swipe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({
+          fromUserId: meId,
+          toUserId,
+          swipeType: type
+        })
+      });
+
+      const data = await res.json();
+
+      // match creation
+      if (data.status === "match" || data.status === "already_matched") {
+        localStorage.setItem("matchId", data.matchId);
+        window.location.href = "chat.html";
+        return;
+      }
+
+      
+      users = users.filter(u => String(u.id) !== String(toUserId));
+      renderUsers();
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = "login.html";
+    }
+
+    loadUsers();
+  </script>
 </body>
 </html>
