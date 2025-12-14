@@ -1,208 +1,285 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Profile — Jackpot</title>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            jp: {
+              bg: "#F7F7F5",
+              text: "#0F172A",
+              muted: "#475569",
+              card: "#FFFFFF",
+              border: "rgba(15, 23, 42, 0.10)",
+              gold: "#D4AF37",
+              gold2: "#FFD36A",
+              ink: "#111827"
+            }
+          },
+          boxShadow: {
+            soft: "0 12px 30px rgba(15, 23, 42, 0.08)",
+            lift: "0 18px 40px rgba(15, 23, 42, 0.12)"
+          }
+        }
+      }
+    }
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
+
   <style>
+    body {
+      background:
+        radial-gradient(900px 450px at 80% 0%, rgba(212,175,55,0.14), transparent 60%),
+        radial-gradient(700px 380px at 10% 10%, rgba(255,211,106,0.10), transparent 60%),
+        radial-gradient(rgba(15,23,42,0.06) 1px, transparent 1px);
+      background-size: auto, auto, 18px 18px;
+      background-position: 0 0, 0 0, 0 0;
+    }
+
     .chip-base {
-      padding: 0.25rem 0.75rem;
-      font-size: 0.75rem;
+      padding: 0.28rem 0.75rem;
+      font-size: 0.8125rem;
       border-radius: 9999px;
-      border: 1px solid rgb(186 230 253);
-      background-color: rgb(240 249 255);
-      color: rgb(15 23 42);
+      border: 1px solid rgba(15, 23, 42, 0.14);
+      background: #fff;
+      color: rgba(15, 23, 42, 0.72);
       cursor: pointer;
-      transition: background-color .15s ease, color .15s ease, border-color .15s ease, transform .1s ease;
+      transition: 0.16s ease;
+      user-select: none;
     }
     .chip-base:hover {
+      border-color: rgba(15, 23, 42, 0.22);
+      color: rgba(15, 23, 42, 0.90);
       transform: translateY(-1px);
     }
     .chip-active {
-      background-color: rgb(14 165 233);
-      border-color: rgb(2 132 199);
-      color: white;
+      background: rgba(212,175,55,0.18);
+      border-color: rgba(212,175,55,0.55);
+      color: #111827;
+    }
+    .chip-disabled {
+      cursor: default;
+      opacity: .85;
+      transform: none !important;
     }
   </style>
 </head>
-<body class="bg-slate-50 min-h-screen flex flex-col">
-<nav class="bg-white shadow-sm">
-  <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
-    <a href="index.html" class="text-sm text-slate-600 hover:text-sky-600">← Back to users</a>
-    <button onclick="logout()" class="text-sm text-slate-500 hover:text-red-500">Log-out</button>
-  </div>
-</nav>
 
-<main class="flex-1">
-  <div class="max-w-4xl mx-auto px-4 py-8">
-    <h1 class="text-xl font-semibold text-slate-900 mb-4">My profile</h1>
+<body class="bg-jp-bg text-jp-text min-h-screen flex flex-col antialiased">
+  <!-- Top bar -->
+  <nav class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b border-jp-border">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="index.html" class="text-sm text-jp-muted hover:text-jp-text">← Back to users</a>
 
-    <!-- Основная информация -->
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex flex-col sm:flex-row sm:items-center sm:space-x-6">
-      <img id="avatar" src="default-avatar.png" class="w-24 h-24 rounded-xl object-cover border border-slate-200 mb-4 sm:mb-0" alt="avatar">
-      <div class="flex-1 space-y-1">
-        <p id="name" class="text-base font-semibold text-slate-900">Name</p>
-        <p id="email" class="text-sm text-slate-500">email@example.com</p>
-        <p class="text-xs text-slate-400 pt-2">
-          This information can't be changed.
-        </p>
+      <div class="flex items-center gap-4 text-sm">
+        <a href="chat.html" class="text-jp-muted hover:text-jp-text">Chats</a>
+        <button onclick="logout()" class="text-jp-muted hover:text-red-600">Log-out</button>
       </div>
     </div>
+  </nav>
 
-    <!-- Аватар -->
-    <div class="mt-6 bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-      <h2 class="text-sm font-semibold text-slate-800 mb-3">Update avatar</h2>
-      <p class="text-xs text-slate-500 mb-3">
-        Choose an image (jpg/png), it will be stored in the folder <code>uploads</code>, and its route is stored in the JSON file.
-      </p>
+  <main class="flex-1">
+    <div class="max-w-5xl mx-auto px-4 py-6">
+      <div class="flex items-end justify-between gap-4 mb-6">
+        <div>
+          <h1 class="text-xl font-semibold">My profile</h1>
+        </div>
+      </div>
 
-      <input id="file" type="file" class="text-xs text-slate-600 mb-3">
-      <button onclick="uploadAvatar()" class="inline-flex items-center px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white text-xs font-medium rounded-lg">
-        Upload new photo
-      </button>
+      <!-- Main info -->
+      <div class="bg-jp-card border border-jp-border shadow-soft rounded-2xl p-6 flex flex-col sm:flex-row sm:items-center sm:gap-6">
+        <img id="avatar" src="default-avatar.png"
+             class="w-24 h-24 rounded-xl object-cover border border-jp-border mb-4 sm:mb-0"
+             alt="avatar" />
 
-      <p id="msg" class="text-xs text-emerald-600 mt-3 hidden"></p>
-      <p id="err" class="text-xs text-red-500 mt-3 hidden"></p>
+        <div class="flex-1">
+          <p id="name" class="text-base font-semibold text-jp-text">Name</p>
+          <p id="email" class="text-sm text-jp-muted">email@example.com</p>
+          <p class="text-xs text-jp-muted pt-2">This information can't be changed.</p>
+        </div>
+      </div>
+
+      <!-- Avatar upload -->
+      <div class="mt-6 bg-jp-card border border-jp-border shadow-soft rounded-2xl p-6">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h2 class="text-sm font-semibold text-jp-text">Update avatar</h2>
+            <p class="text-xs text-jp-muted mt-1">
+              Choose an image (jpg/png)
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-4 flex flex-col sm:flex-row sm:items-center gap-3">
+          <input id="file" type="file" class="text-sm text-jp-muted" />
+          <button onclick="uploadAvatar()"
+          class="inline-flex items-center justify-center px-2.5 py-1 rounded-lg text-[11px] font-semibold
+         text-white bg-[#C9A227] border border-[rgba(15,23,42,0.10)]
+         hover:brightness-95 active:translate-y-px transition shadow-soft">
+          Upload new photo
+          </button>
+
+
+
+</button>
+        </div>
+
+        <p id="msg" class="text-xs text-emerald-700 mt-3 hidden"></p>
+        <p id="err" class="text-xs text-red-600 mt-3 hidden"></p>
+      </div>
+
+      <!-- edit -->
+      <div class="mt-6 bg-jp-card border border-jp-border shadow-soft rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-base font-semibold text-jp-text flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full" style="background: rgba(212,175,55,0.9)"></span>
+            Profile details
+          </h2>
+
+          <button id="editBtn"
+                  class="text-sm px-3 py-1.5 rounded-xl border border-jp-border text-jp-muted hover:text-jp-text hover:border-[rgba(15,23,42,0.18)] transition">
+            Edit
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+          <!-- Age -->
+          <div class="bg-white border border-jp-border rounded-xl p-4">
+            <p class="text-jp-muted text-xs uppercase tracking-wide mb-1">Age</p>
+            <p id="ageView" class="text-jp-text font-medium">—</p>
+            <input id="ageEdit" type="number"
+                   class="hidden w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
+                          focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]" />
+          </div>
+
+          <!-- Gender -->
+          <div class="bg-white border border-jp-border rounded-xl p-4">
+            <p class="text-jp-muted text-xs uppercase tracking-wide mb-1">Gender</p>
+            <p id="genderView" class="text-jp-text font-medium">—</p>
+            <select id="genderEdit"
+                    class="hidden w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
+                           focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]">
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Prefer not to say</option>
+            </select>
+          </div>
+
+          <!-- Faculty -->
+          <div class="bg-white border border-jp-border rounded-xl p-4">
+            <p class="text-jp-muted text-xs uppercase tracking-wide mb-1">Faculty</p>
+            <p id="facultyView" class="text-jp-text font-medium">—</p>
+            <select id="facultyEdit"
+                    class="hidden w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
+                           focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]">
+              <option value="">Select faculty</option>
+              <option value="Engineering">Faculty of Civil and Mechanical Engineering</option>
+              <option value="NaturalSciences">Faculty of Natural Sciences and Technology</option>
+              <option value="IT">Faculty of Computer Science, Information Technology and Energy</option>
+              <option value="Economics">Faculty of Engineering Economics and Management</option>
+              <option value="Management">Institute of Architecture and Design</option>
+              <option value="Architecture">Riga Business School</option>
+              <option value="MaritimeAcademy">Latvian Maritime Academy of Riga Technical University</option>
+              <option value="Liepaja">RTU Liepaja</option>
+              <option value="Rezekne">RTU Rezekne</option>
+            </select>
+          </div>
+
+          <!-- Course -->
+          <div class="bg-white border border-jp-border rounded-xl p-4">
+            <p class="text-jp-muted text-xs uppercase tracking-wide mb-1">Course</p>
+            <p id="courseView" class="text-jp-text font-medium">—</p>
+            <select id="courseEdit"
+                    class="hidden w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
+                           focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]">
+              <option value="">Select your course</option>
+              <option value="1">Bachelor 1</option>
+              <option value="2">Bachelor 2</option>
+              <option value="3">Bachelor 3</option>
+              <option value="4">Bachelor 4</option>
+              <option value="5">Master 1</option>
+              <option value="6">Master 2</option>
+              <option value="7">PhD</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Interests -->
+        <div class="mt-6">
+          <p class="text-jp-muted text-xs uppercase tracking-wide mb-2">Interests</p>
+          <div id="interestsBox" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <!-- About -->
+        <div class="mt-6">
+          <p class="text-jp-muted text-xs uppercase tracking-wide mb-2">About me</p>
+          <p id="aboutView"
+             class="text-jp-text bg-white border border-jp-border rounded-xl p-4 leading-relaxed min-h-[60px]">
+            —
+          </p>
+          <textarea id="aboutEdit" rows="3"
+            class="hidden w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none mt-2
+                   focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]"></textarea>
+        </div>
+
+        <!-- Save / Cancel -->
+        <div id="editButtons" class="hidden mt-6 flex gap-3">
+  
+
+          <button onclick="saveInline()"
+            class="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-[#C9A227] border border-jp-border text-jp-muted
+                   hover:text-jp-text hover:border-[rgba(15,23,42,0.18)] transition">
+            Save
+          </button>
+          <button onclick="cancelInline()"
+            class="px-4 py-2 rounded-xl text-sm font-semibold border border-jp-border text-jp-muted
+                   hover:text-jp-text hover:border-[rgba(15,23,42,0.18)] transition">
+            Cancel
+          </button>
+        </div>
+
+        <p id="editMsg" class="text-xs mt-3 hidden"></p>
+      </div>
     </div>
+  </main>
 
-    <!-- Детали профиля + inline edit -->
-    <div class="mt-6 bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-base font-semibold text-slate-900 flex items-center gap-2">
-          <span class="w-1.5 h-1.5 bg-sky-500 rounded-full"></span>
-          Profile details
-        </h2>
-        <button id="editBtn"
-          class="text-xs px-3 py-1 bg-slate-200 hover:bg-slate-300 rounded-lg transition">
-          Edit
-        </button>
-      </div>
-
-      <!-- Поля: просмотр + скрытые инпуты -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-        <!-- Age -->
-        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
-          <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Age</p>
-          <p id="ageView" class="text-slate-800 font-medium">—</p>
-          <input id="ageEdit" type="number"
-                 class="hidden w-full border border-slate-300 rounded-lg px-2 py-1 text-sm">
-        </div>
-
-        <!-- Gender -->
-        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
-          <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Gender</p>
-          <p id="genderView" class="text-slate-800 font-medium">—</p>
-          <select id="genderEdit"
-                  class="hidden w-full border border-slate-300 rounded-lg px-2 py-1 text-sm">
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Prefer not say</option>
-          </select>
-        </div>
-
-        <!-- Faculty -->
-        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
-          <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Faculty</p>
-          <p id="facultyView" class="text-slate-800 font-medium">—</p>
-          <select id="facultyEdit"
-                 class="hidden w-full border border-slate-300 rounded-lg px-2 py-1 text-sm">
-                 <option value="">Select faculty</option>
-          <option value="Engineering">Faculty of Civil and Mechanical Engineering</option>
-          <option value="NaturalSciences">Faculty of Natural Sciences and Technology</option>
-          <option value="IT">Faculty of Computer Science, Information Technology and Energy</option>
-          <option value="Economics">Faculty of Engineering Economics and Management</option>
-          <option value="Management">Institute of Architecture and Design</option>
-          <option value="Architecture">Riga Business School</option>
-          <option value="MaritimeAcademy">Latvian Maritime Academy of Riga Technical University</option>
-          <option value="Liepaja">RTU Liepaja</option>
-          <option value="Rezekne">RTU Rezekne</option>
-          </select>
-        </div>
-
-        <!-- Course -->
-        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
-          <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Course</p>
-          <p id="courseView" class="text-slate-800 font-medium">—</p>
-          <select id="courseEdit" type="number"
-                 class="hidden w-full border border-slate-300 rounded-lg px-2 py-1 text-sm">
-                 <option value="">Select your course</option>
-          <option value="1">Bachelor 1</option>
-          <option value="2">Bachelor 2</option>
-          <option value="3">Bachelor 3</option>
-          <option value="4">Bachelor 4</option>
-          <option value="5">Master 1</option>
-          <option value="6">Master 2</option>
-          <option value="7">PhD</option>
-        </select>
-        </div>
-      </div>
-
-      <!-- Interests: чипы -->
-      <div class="mt-6">
-        <p class="text-slate-500 text-xs uppercase tracking-wide mb-2">Interests</p>
-        <div id="interestsBox" class="flex flex-wrap gap-2"></div>
-      </div>
-
-      <!-- About -->
-      <div class="mt-6">
-        <p class="text-slate-500 text-xs uppercase tracking-wide mb-2">About me</p>
-        <p id="aboutView" class="text-slate-700 bg-slate-50 border border-slate-200 rounded-xl p-4 leading-relaxed min-h-[60px]">
-          —
-        </p>
-        <textarea id="aboutEdit" rows="3"
-          class="hidden w-full border border-slate-300 rounded-lg px-3 py-2 text-sm mt-1"></textarea>
-      </div>
-
-      <!-- Кнопки сохранения / отмены -->
-      <div id="editButtons" class="hidden mt-6 flex gap-3">
-        <button onclick="saveInline()"
-          class="px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white text-sm rounded-lg">
-          Save
-        </button>
-        <button onclick="cancelInline()"
-          class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-sm rounded-lg">
-          Cancel
-        </button>
-      </div>
-
-      <p id="editMsg" class="text-xs text-emerald-600 mt-3 hidden"></p>
+  <footer class="mt-auto border-t border-jp-border bg-white/70 backdrop-blur">
+    <div class="max-w-5xl mx-auto px-4 py-4 text-xs text-jp-muted flex items-center justify-between gap-3">
+      <p>© <span id="year"></span> Jackpot</p>
+      <p class="text-right">December, 2025</p>
     </div>
-
-  </div>
-</main>
+  </footer>
 
 <script>
 const token = localStorage.getItem("token");
-if (!token) {
-  window.location.href = "login.html";
-}
+if (!token) window.location.href = "login.html";
 
 let editMode = false;
 let currentInterests = [];
 
-const ALL_INTERESTS = ["sports", "music", "movies", "BoardGaming", "CompGaming", "travel", "food","astrology","science","art"];
+
+const ALL_INTERESTS = ["sports","music","movies","BoardGaming","CompGaming","travel","food","astrology","science","art"];
 const INTEREST_LABELS = {
   sports: "Sport",
   music: "Music",
   movies: "Movies",
-  gaming: "Board games",
-  science: "Computer games",
+  BoardGaming: "Board games",
+  CompGaming: "Computer games",
   travel: "Travel",
   food: "Food",
   astrology: "Astrology",
   science: "Science",
   art: "Art"
 };
-const GENDER_LABELS = {
-  male: "Male",
-  female: "Female",
-  other: "Prefer not to say"
-};
+const GENDER_LABELS = { male: "Male", female: "Female", other: "Prefer not to say" };
 
 async function loadProfile() {
-  const res = await fetch("/api/me", {
-    headers: { "Authorization": "Bearer " + token }
-  });
+  const res = await fetch("/api/me", { headers: { "Authorization": "Bearer " + token } });
 
   if (res.status === 401) {
     localStorage.clear();
@@ -212,48 +289,48 @@ async function loadProfile() {
 
   const me = await res.json();
 
-  // Основное
   document.getElementById("name").textContent = me.name || "No name";
-  document.getElementById("email").textContent = me.email;
+  document.getElementById("email").textContent = me.email || "";
   document.getElementById("avatar").src = me.avatar || "default-avatar.png";
 
-  // Age
   document.getElementById("ageView").textContent = me.age ?? "—";
   document.getElementById("ageEdit").value = me.age ?? "";
 
-  // Gender
   const genderLabel = me.gender ? (GENDER_LABELS[me.gender] || me.gender) : "—";
   document.getElementById("genderView").textContent = genderLabel;
   document.getElementById("genderEdit").value = me.gender || "";
 
-  // Faculty
   document.getElementById("facultyView").textContent = me.faculty || "—";
   document.getElementById("facultyEdit").value = me.faculty || "";
 
-  // Course
   document.getElementById("courseView").textContent = me.course ?? "—";
   document.getElementById("courseEdit").value = me.course ?? "";
 
-  // About
   document.getElementById("aboutView").textContent = me.about || "—";
   document.getElementById("aboutEdit").value = me.about || "";
 
-  // Interests
   currentInterests = Array.isArray(me.interests) ? me.interests : [];
   renderInterests();
+
+  if (!editMode) {
+    ["age","gender","faculty","course","about"].forEach(toggleFieldToView);
+    document.getElementById("editButtons").classList.add("hidden");
+    document.getElementById("editBtn").textContent = "Edit";
+  }
 }
 
 function renderInterests() {
   const box = document.getElementById("interestsBox");
   box.innerHTML = "";
 
-  // Основные интересы
   ALL_INTERESTS.forEach(value => {
     const chip = document.createElement("button");
     chip.type = "button";
     chip.dataset.value = value;
     chip.textContent = INTEREST_LABELS[value] || value;
-    chip.className = "chip-base" + (currentInterests.includes(value) ? " chip-active" : "");
+
+    chip.className = "chip-base" + (currentInterests.includes(value) ? " chip-active" : "") + (!editMode ? " chip-disabled" : "");
+
     chip.addEventListener("click", () => {
       if (!editMode) return;
 
@@ -265,29 +342,31 @@ function renderInterests() {
         chip.classList.add("chip-active");
       }
     });
+
     box.appendChild(chip);
   });
 
-  // Дополнительные (если есть интересы, которых нет в ALL_INTERESTS)
   const extra = currentInterests.filter(x => !ALL_INTERESTS.includes(x));
   extra.forEach(value => {
     const chip = document.createElement("button");
     chip.type = "button";
     chip.dataset.value = value;
     chip.textContent = value;
-    chip.className = "chip-base chip-active";
+    chip.className = "chip-base chip-active" + (!editMode ? " chip-disabled" : "");
+
     chip.addEventListener("click", () => {
       if (!editMode) return;
       currentInterests = currentInterests.filter(x => x !== value);
-      chip.classList.remove("chip-active");
+      chip.remove();
     });
+
     box.appendChild(chip);
   });
 
   if (ALL_INTERESTS.length === 0 && currentInterests.length === 0) {
     const empty = document.createElement("span");
     empty.textContent = "—";
-    empty.className = "text-slate-500 text-sm";
+    empty.className = "text-jp-muted text-sm";
     box.appendChild(empty);
   }
 }
@@ -295,12 +374,10 @@ function renderInterests() {
 function enableInlineEdit() {
   editMode = true;
   document.getElementById("editButtons").classList.remove("hidden");
+  document.getElementById("editBtn").textContent = "Cancel edit";
 
-  toggleFieldToEdit("age");
-  toggleFieldToEdit("gender");
-  toggleFieldToEdit("faculty");
-  toggleFieldToEdit("course");
-  toggleFieldToEdit("about");
+  ["age","gender","faculty","course","about"].forEach(toggleFieldToEdit);
+  renderInterests();
 }
 
 function toggleFieldToEdit(field) {
@@ -322,14 +399,16 @@ function toggleFieldToView(field) {
 function cancelInline() {
   editMode = false;
   document.getElementById("editButtons").classList.add("hidden");
-  // Вернуть всё к данным с сервера
+  document.getElementById("editBtn").textContent = "Edit";
   loadProfile();
+  renderInterests();
 }
 
 async function saveInline() {
   const msg = document.getElementById("editMsg");
   msg.classList.add("hidden");
   msg.textContent = "";
+  msg.className = "text-xs mt-3 hidden";
 
   const payload = {
     age: Number(document.getElementById("ageEdit").value),
@@ -351,15 +430,18 @@ async function saveInline() {
 
   const data = await res.json();
 
+  msg.classList.remove("hidden");
   if (data.status === "ok") {
     msg.textContent = "Profile updated.";
-    msg.classList.remove("hidden");
+    msg.classList.add("text-emerald-700");
     editMode = false;
     document.getElementById("editButtons").classList.add("hidden");
+    document.getElementById("editBtn").textContent = "Edit";
     await loadProfile();
-  } else if (data.error) {
-    msg.textContent = data.error;
-    msg.classList.remove("hidden");
+    renderInterests();
+  } else {
+    msg.textContent = data.error || "Something went wrong.";
+    msg.classList.add("text-red-600");
   }
 }
 
@@ -371,7 +453,7 @@ async function uploadAvatar() {
   err.classList.add("hidden");
 
   if (!fileInput.files.length) {
-    err.textContent = "Выберите файл.";
+    err.textContent = "Choose a file.";
     err.classList.remove("hidden");
     return;
   }
@@ -389,10 +471,10 @@ async function uploadAvatar() {
 
   if (data.avatar) {
     document.getElementById("avatar").src = data.avatar;
-    msg.textContent = "Аватар обновлён.";
+    msg.textContent = "Avatar updated.";
     msg.classList.remove("hidden");
-  } else if (data.error) {
-    err.textContent = data.error;
+  } else {
+    err.textContent = data.error || "Upload failed.";
     err.classList.remove("hidden");
   }
 }
@@ -402,9 +484,16 @@ function logout() {
   window.location.href = "login.html";
 }
 
-// Инициализация
+// Init
+const y = document.getElementById("year");
+if (y) y.textContent = new Date().getFullYear();
+
 loadProfile();
-document.getElementById("editBtn").addEventListener("click", enableInlineEdit);
+
+document.getElementById("editBtn").addEventListener("click", () => {
+  if (editMode) cancelInline();
+  else enableInlineEdit();
+});
 </script>
 </body>
 </html>
