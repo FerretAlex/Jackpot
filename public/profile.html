@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -71,7 +71,7 @@
 </head>
 
 <body class="bg-jp-bg text-jp-text min-h-screen flex flex-col antialiased">
-  <!-- Top bar -->
+  
   <nav class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b border-jp-border">
     <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
       <a href="index.html" class="text-sm text-jp-muted hover:text-jp-text">← Back to users</a>
@@ -91,7 +91,7 @@
         </div>
       </div>
 
-      <!-- Main info -->
+=
       <div class="bg-jp-card border border-jp-border shadow-soft rounded-2xl p-6 flex flex-col sm:flex-row sm:items-center sm:gap-6">
         <img id="avatar" src="default-avatar.png"
              class="w-24 h-24 rounded-xl object-cover border border-jp-border mb-4 sm:mb-0"
@@ -104,7 +104,7 @@
         </div>
       </div>
 
-      <!-- Avatar upload -->
+  =
       <div class="mt-6 bg-jp-card border border-jp-border shadow-soft rounded-2xl p-6">
         <div class="flex items-start justify-between gap-4">
           <div>
@@ -133,7 +133,7 @@
         <p id="err" class="text-xs text-red-600 mt-3 hidden"></p>
       </div>
 
-      <!-- edit -->
+   =
       <div class="mt-6 bg-jp-card border border-jp-border shadow-soft rounded-2xl p-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-base font-semibold text-jp-text flex items-center gap-2">
@@ -148,7 +148,7 @@
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-          <!-- Age -->
+      =
           <div class="bg-white border border-jp-border rounded-xl p-4">
             <p class="text-jp-muted text-xs uppercase tracking-wide mb-1">Age</p>
             <p id="ageView" class="text-jp-text font-medium">—</p>
@@ -157,7 +157,7 @@
                           focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]" />
           </div>
 
-          <!-- Gender -->
+       =
           <div class="bg-white border border-jp-border rounded-xl p-4">
             <p class="text-jp-muted text-xs uppercase tracking-wide mb-1">Gender</p>
             <p id="genderView" class="text-jp-text font-medium">—</p>
@@ -170,7 +170,7 @@
             </select>
           </div>
 
-          <!-- Faculty -->
+      =
           <div class="bg-white border border-jp-border rounded-xl p-4">
             <p class="text-jp-muted text-xs uppercase tracking-wide mb-1">Faculty</p>
             <p id="facultyView" class="text-jp-text font-medium">—</p>
@@ -190,7 +190,7 @@
             </select>
           </div>
 
-          <!-- Course -->
+        
           <div class="bg-white border border-jp-border rounded-xl p-4">
             <p class="text-jp-muted text-xs uppercase tracking-wide mb-1">Course</p>
             <p id="courseView" class="text-jp-text font-medium">—</p>
@@ -209,13 +209,13 @@
           </div>
         </div>
 
-        <!-- Interests -->
+
         <div class="mt-6">
           <p class="text-jp-muted text-xs uppercase tracking-wide mb-2">Interests</p>
           <div id="interestsBox" class="flex flex-wrap gap-2"></div>
         </div>
 
-        <!-- About -->
+     
         <div class="mt-6">
           <p class="text-jp-muted text-xs uppercase tracking-wide mb-2">About me</p>
           <p id="aboutView"
@@ -227,7 +227,6 @@
                    focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]"></textarea>
         </div>
 
-        <!-- Save / Cancel -->
         <div id="editButtons" class="hidden mt-6 flex gap-3">
   
 
@@ -484,7 +483,7 @@ function logout() {
   window.location.href = "login.html";
 }
 
-// Init
+
 const y = document.getElementById("year");
 if (y) y.textContent = new Date().getFullYear();
 
