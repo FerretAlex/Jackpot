@@ -44,7 +44,7 @@
 </head>
 
 <body class="bg-jp-bg text-jp-text min-h-screen flex flex-col antialiased">
-  <!-- Top bar -->
+
   <nav class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b border-jp-border">
     <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
       
@@ -59,7 +59,7 @@
         </div>
       </div>
 
-      <!-- Links -->
+
       <div class="flex items-center gap-4 text-sm">
         <a href="matches.html" class="text-jp-muted hover:text-jp-text">Chats</a>
         <a href="profile.html" class="text-jp-muted hover:text-jp-text">Profile</a>
@@ -68,7 +68,7 @@
     </div>
   </nav>
 
-  <!-- Main -->
+
   <main class="flex-1">
     <div class="max-w-5xl mx-auto px-4 py-6">
       <div class="flex items-end justify-between gap-4 mb-6">
@@ -200,7 +200,7 @@
 
       const data = await res.json();
 
-      // match creation
+
       if (data.status === "match" || data.status === "already_matched") {
         localStorage.setItem("matchId", data.matchId);
         window.location.href = "chat.html";
