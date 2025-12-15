@@ -15,7 +15,6 @@ app.use(express.json());
 app.use(express.static("public"));
 app.use("/uploads", express.static("uploads"));
 
-// Multer для аватара
 const storage = multer.diskStorage({
   destination: "uploads/",
   filename: (req, file, cb) => {
@@ -24,7 +23,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Middleware авторизации
+
 function auth(req, res, next) {
   const header = req.headers.authorization;
   if (!header) return res.status(401).json({ error: "No token" });
@@ -38,17 +37,16 @@ function auth(req, res, next) {
   }
 }
 
-// Регистрация
 app.post("/api/register", async (req, res) => {
   const db = loadDB();
   const { email, password, name, age, gender, faculty, course, interests, about } = req.body;
 
   if (!email || !password) {
-    return res.json({ error: "Email и пароль обязательны" });
+    return res.json({ error: "Email and password are required" });
   }
 
   if (db.users.find((u) => u.email === email)) {
-    return res.json({ error: "Пользователь с таким email уже существует" });
+    return res.json({ error: "A user with this email already exists" });
   }
 
   const hash = await bcrypt.hash(password, 10);
@@ -73,22 +71,21 @@ app.post("/api/register", async (req, res) => {
   res.json({ status: "ok" });
 });
 
-// Логин
+
 app.post("/api/login", async (req, res) => {
   const db = loadDB();
   const { email, password } = req.body;
 
   const user = db.users.find((u) => u.email === email);
-  if (!user) return res.json({ error: "Пользователь не найден" });
+  if (!user) return res.json({ error: "User not found" });
 
   const ok = await bcrypt.compare(password, user.password);
-  if (!ok) return res.json({ error: "Неверный пароль" });
+  if (!ok) return res.json({ error: "Invalid password" });
 
   const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: "7d" });
   res.json({ token, userId: user.id });
 });
 
-// Текущий пользователь
 app.get("/api/me", auth, (req, res) => {
   const db = loadDB();
   const user = db.users.find((u) => Number(u.id) === Number(req.userId));
@@ -109,7 +106,6 @@ app.get("/api/me", auth, (req, res) => {
   });
 });
 
-// Загрузка аватара
 app.post("/api/upload-avatar", auth, upload.single("avatar"), (req, res) => {
   const db = loadDB();
   const user = db.users.find((u) => Number(u.id) === Number(req.userId));
@@ -121,7 +117,6 @@ app.post("/api/upload-avatar", auth, upload.single("avatar"), (req, res) => {
   res.json({ avatar: user.avatar });
 });
 
-// Список других пользователей
 app.get("/api/users", auth, (req, res) => {
   const db = loadDB();
   const myId = Number(req.userId);
@@ -146,14 +141,11 @@ app.get("/api/users", auth, (req, res) => {
   res.json(list);
 });
 
-// Сохранение свайпа (лайк/дизлайк) + создание матча/чата
 app.post("/api/swipe", auth, (req, res) => {
   const db = loadDB();
   const fromUserId = Number(req.body.fromUserId);
   const toUserId   = Number(req.body.toUserId);
   const swipeType = req.body.swipeType;
-
-  // Сохраняем свайп
 
   db.swipes.push({
     id: Date.now(),
@@ -163,7 +155,7 @@ app.post("/api/swipe", auth, (req, res) => {
   });
   saveDB(db);
 
-  // Проверяем: если лайк — ищем обратный лайк
+
   if (swipeType === "like") {
     let reverseLike = db.swipes.find(
       (s) =>
@@ -173,7 +165,7 @@ app.post("/api/swipe", auth, (req, res) => {
     );
 
     if (reverseLike) {
-      // Проверяем — не создан ли матч раньше
+      
       let match = db.matches.find(
         (m) =>
           (m.user1 === fromUserId && m.user2 === toUserId) ||
@@ -181,7 +173,7 @@ app.post("/api/swipe", auth, (req, res) => {
       );
 
       if (!match) {
-        // Создаем НОВЫЙ MATCH + чат
+   
         match = {
           id: Date.now(),
           user1: fromUserId,
@@ -198,7 +190,7 @@ app.post("/api/swipe", auth, (req, res) => {
         });
       }
 
-      // Если матч уже существовал — просто вернуть matchId
+      
       saveDB(db);
       return res.json({
         status: "already_matched",
@@ -210,7 +202,7 @@ app.post("/api/swipe", auth, (req, res) => {
   res.json({ status: "ok" });
 });
 
-//GET match info
+
 app.get("/api/match/:id", auth, (req, res) => {
   const db = loadDB();
   const matchId = Number(req.params.id);
@@ -240,7 +232,7 @@ app.get("/api/match/:id", auth, (req, res) => {
   res.json({ ...match, user1info, user2info });
 });
 
-// GET messages for a match
+
 app.get("/api/chat/:matchId", auth, (req, res) => {
   const db = loadDB();
   const matchId = Number(req.params.matchId);
@@ -261,27 +253,26 @@ app.get("/api/chat/:matchId", auth, (req, res) => {
     return res.status(403).json({ error: "Access denied" });
   }
 
-  // 3. Return messages for this match
+  
   const msgs = db.messages
     .filter(m => Number(m.matchId) === matchId)
-    .sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt)); // optional: chronological order
+    .sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt)); 
 
   res.json(msgs);
 });
 
-// POST a new message to a match
 app.post("/api/chat/:matchId", auth, (req, res) => {
   const db = loadDB();
-  const matchId = Number(req.params.matchId); // ensure number
+  const matchId = Number(req.params.matchId); 
   const { text } = req.body;
 
-  // 1. Validate match exists
+
   const match = db.matches.find(m => Number(m.id) === matchId);
   if (!match) {
     return res.status(404).json({ error: "Match not found" });
   }
 
-  // 2. Validate user belongs to match
+  
   const userId = Number(req.userId);
   if (Number(match.user1) !== userId && Number(match.user2) !== userId) {
     return res.status(403).json({ error: "Access denied" });
@@ -290,10 +281,10 @@ app.post("/api/chat/:matchId", auth, (req, res) => {
   if (!text || !text.trim()) {
   return res.status(400).json({ error: "Empty message" });
 }
-  // 3. Store the message
+  
   db.messages.push({
-    id: Date.now(),      // message ID as number
-    matchId: matchId,    // number
+    id: Date.now(),     
+    matchId: matchId,    
     sender: userId,
     text,
     createdAt: new Date().toISOString()
@@ -303,7 +294,6 @@ app.post("/api/chat/:matchId", auth, (req, res) => {
   res.json({ status: "sent" });
 });
 
-// Authenteticating matches
 app.get("/api/matches", auth, (req, res) => {
   const db = loadDB();
   const userId = Number(req.userId);
@@ -326,7 +316,6 @@ app.get("/api/matches", auth, (req, res) => {
   res.json(userMatches);
 });
 
-// Запуск
 app.listen(PORT, () => {
   console.log(`JSON neutral Tinder running on http://localhost:${PORT}`);
 });
