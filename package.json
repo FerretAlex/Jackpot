@@ -1,7 +1,7 @@
 {
-  "name": "Jackpot",
+  "name": "mini-tinder-json-neutral",
   "version": "1.0.0",
-  "description": "Dating app",
+  "description": "Учебный мини-Tinder на JSON-базе с нейтральным современным UI",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
