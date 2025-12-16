@@ -8,7 +8,7 @@
       "avatar": "/uploads/1765220794554.jpg",
       "age": 22,
       "gender": "female",
-      "faculty": "Humanities",
+      "faculty": "Engineering",
       "course": 1,
       "interests": [
         "movies"
@@ -58,7 +58,23 @@
       "interests": [
         "sports"
       ],
-      "about": "Бла-бла-бла"
+      "about": "Totaly misseed"
+    },
+    {
+      "id": 1765897143049,
+      "email": "antony.project@gmail.com",
+      "password": "$2b$10$DhiyAdvTxkwJA3IZVlOQm.FKRMOYtxe/jx/RNGYMS2hF1kn8gs85m",
+      "name": "Anton",
+      "avatar": null,
+      "age": 20,
+      "gender": "other",
+      "faculty": "Architecture",
+      "course": 5,
+      "interests": [
+        "sports",
+        "astrology"
+      ],
+      "about": "Hy guys, here to meet new friends\nMaybe we can go to gym together?"
     }
   ],
   "swipes": [
