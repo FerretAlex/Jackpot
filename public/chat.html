@@ -1,58 +1,47 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Chat — Jackpot</title>
 
-  
   <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            jp: {
-              bg: "#F7F7F5",
-              text: "#0F172A",
-              muted: "#475569",
-              card: "#FFFFFF",
-              border: "rgba(15, 23, 42, 0.10)",
-              gold: "#D4AF37",
-              gold2: "#FFD36A",
-              ink: "#111827"
-            }
-          },
-          boxShadow: {
-            soft: "0 12px 30px rgba(15, 23, 42, 0.08)",
-            lift: "0 18px 40px rgba(15, 23, 42, 0.12)"
-          }
-        }
-      }
-    }
+    tailwind.config={theme:{extend:{colors:{jp:{
+      bg:"#F7F7F5",
+      text:"#0F172A",
+      muted:"#475569",
+      card:"#FFFFFF",
+      border:"rgba(15, 23, 42, 0.10)",
+      gold:"#D4AF37",
+      gold2:"#FFD36A",
+      ink:"#111827"
+    }},boxShadow:{
+      soft:"0 12px 30px rgba(15, 23, 42, 0.08)",
+      lift:"0 18px 40px rgba(15, 23, 42, 0.12)"
+    }}}};
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    body {
+    body{
       background:
-        radial-gradient(900px 450px at 80% 0%, rgba(212,175,55,0.14), transparent 60%),
-        radial-gradient(700px 380px at 10% 10%, rgba(255,211,106,0.10), transparent 60%),
-        radial-gradient(rgba(15,23,42,0.06) 1px, transparent 1px);
-      background-size: auto, auto, 18px 18px;
-      background-position: 0 0, 0 0, 0 0;
+        radial-gradient(900px 450px at 80% 0%,rgba(212,175,55,0.14),transparent 60%),
+        radial-gradient(700px 380px at 10% 10%,rgba(255,211,106,0.10),transparent 60%),
+        radial-gradient(rgba(15,23,42,0.06) 1px,transparent 1px);
+      background-size:auto,auto,18px 18px;
+      background-position:0 0,0 0,0 0;
     }
   </style>
 </head>
 
 <body class="bg-jp-bg text-jp-text min-h-screen flex flex-col antialiased">
-  
   <nav class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b border-jp-border">
     <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
       <a href="matches.html" class="text-sm text-jp-muted hover:text-jp-text">← Back</a>
 
       <div class="flex items-center gap-4 text-sm">
         <a href="index.html" class="text-jp-muted hover:text-jp-text">Users</a>
-        <button onclick="logout()" class="text-jp-muted hover:text-red-600">Exit</button>
+        <button type="button" onclick="logout()" class="text-jp-muted hover:text-red-600">Exit</button>
       </div>
     </div>
   </nav>
@@ -66,146 +55,134 @@
         </div>
 
         <span class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-jp-border bg-white text-xs text-jp-muted shadow-soft">
-          <span class="inline-block w-2 h-2 rounded-full" style="background: rgba(212,175,55,0.9)"></span>
+          <span class="inline-block w-2 h-2 rounded-full" style="background:rgba(212,175,55,0.9)"></span>
           Jackpot chat
         </span>
       </div>
 
-      
       <div id="messages"
-           class="flex-1 bg-jp-card rounded-2xl shadow-soft border border-jp-border p-4 overflow-y-auto space-y-2 text-sm">
-      </div>
+        class="flex-1 bg-jp-card rounded-2xl shadow-soft border border-jp-border p-4 overflow-y-auto space-y-2 text-sm"></div>
 
-      
       <div class="mt-4 flex gap-2 items-center">
         <input id="msg-input" type="text"
-               class="flex-1 rounded-xl border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
-                      focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]"
-               placeholder="Введите сообщение..." />
+          class="flex-1 rounded-xl border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
+                 focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]"
+          placeholder="Введите сообщение..."/>
 
-        <button id="send-btn"
-                class="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-[#C9A227]
-                       hover:brightness-95 active:translate-y-px transition shadow-soft">
+        <button id="send-btn" type="button"
+          class="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-[#C9A227]
+                 hover:brightness-95 active:translate-y-px transition shadow-soft">
           Send
         </button>
       </div>
     </div>
   </main>
 
-<script>
-const token = localStorage.getItem("token");
-const meId = Number(localStorage.getItem("userId"));
-if (!token) window.location.href = "login.html";
+  <script>
+    const token=localStorage.getItem("token");
+    const meId=Number(localStorage.getItem("userId"));
+    if(!token)window.location.href="login.html";
 
+    const params=new URLSearchParams(window.location.search);
+    const matchId=Number(params.get("matchId"));
+    if(!matchId){
+      alert("Match not specified");
+      window.location.href="matches.html";
+    }
 
-const params = new URLSearchParams(window.location.search);
-const matchId = Number(params.get("matchId"));
+    let pollTimer=null;
+    let sending=false;
 
-if (!matchId) {
-  alert("Match not specified");
-  window.location.href = "matches.html";
-}
+    function logout(){
+      localStorage.clear();
+      window.location.href="login.html";
+    }
 
+    async function loadMatchInfo(){
+      const res=await fetch(`/api/match/${matchId}`,{headers:{"Authorization":"Bearer "+token}});
+      if(!res.ok){
+        alert("Match not found");
+        window.location.href="matches.html";
+        return;
+      }
+      const match=await res.json();
+      const other=(Number(match.user1)===meId)?match.user2info:match.user1info;
+      document.getElementById("chat-title").textContent=other?.name||"Chat";
+    }
 
-async function loadMatchInfo() {
-  const res = await fetch(`/api/match/${matchId}`, {
-    headers: { "Authorization": "Bearer " + token }
-  });
+    function appendMessage(m){
+      const box=document.getElementById("messages");
+      const mine=Number(m.sender)===meId;
 
-  if (!res.ok) {
-    alert("Match not found");
-    window.location.href = "matches.html";
-    return;
-  }
+      const wrap=document.createElement("div");
+      wrap.className="flex "+(mine?"justify-end":"justify-start");
 
-  const match = await res.json();
-  const other = (Number(match.user1) === meId) ? match.user2info : match.user1info;
+      const bubble=document.createElement("div");
+      bubble.className=
+        "px-3 py-2 rounded-2xl max-w-[75%] border "+
+        (mine
+          ?"bg-[rgba(212,175,55,0.18)] border-[rgba(212,175,55,0.45)] text-jp-ink"
+          :"bg-white border-jp-border text-jp-text");
 
-  document.getElementById("chat-title").textContent = other?.name || "Chat";
-}
+      bubble.textContent=m.text;
+      wrap.appendChild(bubble);
+      box.appendChild(wrap);
+      box.scrollTop=box.scrollHeight;
+    }
 
+    async function loadMessages(){
+      const res=await fetch(`/api/chat/${matchId}`,{headers:{"Authorization":"Bearer "+token}});
+      if(!res.ok)return;
 
-function appendMessage(m) {
-  const box = document.getElementById("messages");
+      const msgs=await res.json();
+      const box=document.getElementById("messages");
+      box.innerHTML="";
+      msgs.forEach(appendMessage);
+    }
 
-  const wrap = document.createElement("div");
-  const mine = Number(m.sender) === meId;
-  wrap.className = "flex " + (mine ? "justify-end" : "justify-start");
+    async function sendMessage(){
+      if(sending)return;
 
-  const bubble = document.createElement("div");
-  
-  bubble.className =
-    "px-3 py-2 rounded-2xl max-w-[75%] border " +
-    (mine
-      ? "bg-[rgba(212,175,55,0.18)] border-[rgba(212,175,55,0.45)] text-jp-ink"
-      : "bg-white border-jp-border text-jp-text");
+      const input=document.getElementById("msg-input");
+      const text=input.value.trim();
+      if(!text)return;
 
-  bubble.textContent = m.text;
+      sending=true;
+      appendMessage({sender:meId,text});
 
-  wrap.appendChild(bubble);
-  box.appendChild(wrap);
-  box.scrollTop = box.scrollHeight;
-}
+      try{
+        const res=await fetch(`/api/chat/${matchId}`,{
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json",
+            "Authorization":"Bearer "+token
+          },
+          body:JSON.stringify({text})
+        });
 
-async function loadMessages() {
-  const res = await fetch(`/api/chat/${matchId}`, {
-    headers: { "Authorization": "Bearer " + token }
-  });
+        if(res.ok){
+          input.value="";
+          await loadMessages();
+        }else{
+          alert("Failed to send message");
+          await loadMessages();
+        }
+      }finally{
+        sending=false;
+      }
+    }
 
-  if (!res.ok) return;
+    document.getElementById("send-btn").addEventListener("click",sendMessage);
+    document.getElementById("msg-input").addEventListener("keydown",e=>{
+      if(e.key==="Enter")sendMessage();
+    });
 
-  const msgs = await res.json();
-  const box = document.getElementById("messages");
-  box.innerHTML = "";
-  msgs.forEach(appendMessage);
-}
-
-
-async function sendMessage() {
-  const input = document.getElementById("msg-input");
-  const text = input.value.trim();
-  if (!text) return;
-
-  
-  appendMessage({ sender: meId, text });
-
-  const res = await fetch(`/api/chat/${matchId}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + token
-    },
-    body: JSON.stringify({ text })
-  });
-
-  if (res.ok) {
-    input.value = "";
-    
-    loadMessages();
-  } else {
-    alert("Failed to send message");
-    loadMessages();
-  }
-}
-
-
-function logout() {
-  localStorage.clear();
-  window.location.href = "login.html";
-}
-
-
-document.getElementById("send-btn").addEventListener("click", sendMessage);
-document.getElementById("msg-input").addEventListener("keydown", e => {
-  if (e.key === "Enter") sendMessage();
-});
-
-
-(async () => {
-  await loadMatchInfo();
-  await loadMessages();
-  setInterval(loadMessages, 1500); 
-})();
-</script>
+    (async()=>{
+      await loadMatchInfo();
+      await loadMessages();
+      pollTimer=setInterval(loadMessages,1500);
+      window.addEventListener("beforeunload",()=>pollTimer&&clearInterval(pollTimer));
+    })();
+  </script>
 </body>
 </html>
