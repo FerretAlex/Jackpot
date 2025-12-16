@@ -1,45 +1,35 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Jackpot - Matches</title>
 
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            jp: {
-              bg: "#F7F7F5",
-              text: "#0F172A",
-              muted: "#475569",
-              card: "#FFFFFF",
-              border: "rgba(15, 23, 42, 0.10)",
-              gold: "#D4AF37",
-              gold2: "#FFD36A",
-              ink: "#111827"
-            }
-          },
-          boxShadow: {
-            soft: "0 12px 30px rgba(15, 23, 42, 0.08)",
-            lift: "0 18px 40px rgba(15, 23, 42, 0.12)"
-          }
-        }
-      }
-    }
+    <script>
+    tailwind.config={theme:{extend:{colors:{jp:{
+      bg:"#F7F7F5",
+      text:"#0F172A",
+      muted:"#475569",
+      card:"#FFFFFF",
+      border:"rgba(15, 23, 42, 0.10)",
+      gold:"#D4AF37",
+      gold2:"#FFD36A",
+      ink:"#111827"
+    }},boxShadow:{
+      soft:"0 12px 30px rgba(15, 23, 42, 0.08)",
+      lift:"0 18px 40px rgba(15, 23, 42, 0.12)"
+    }}}};
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    body {
+    body{
       background:
-        radial-gradient(900px 450px at 80% 0%, rgba(212,175,55,0.14), transparent 60%),
-        radial-gradient(700px 380px at 10% 10%, rgba(255,211,106,0.10), transparent 60%),
-        radial-gradient(rgba(15,23,42,0.06) 1px, transparent 1px);
-      background-size: auto, auto, 18px 18px;
-      background-position: 0 0, 0 0, 0 0;
+        radial-gradient(900px 450px at 80% 0%,rgba(212,175,55,0.14),transparent 60%),
+        radial-gradient(700px 380px at 10% 10%,rgba(255,211,106,0.10),transparent 60%),
+        radial-gradient(rgba(15,23,42,0.06) 1px,transparent 1px);
+      background-size:auto,auto,18px 18px;
+      background-position:0 0,0 0,0 0;
     }
   </style>
 </head>
@@ -47,22 +37,19 @@
 <body class="bg-jp-bg text-jp-text min-h-screen flex flex-col antialiased">
   <nav class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b border-jp-border">
     <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-      
       <div class="flex items-center gap-3">
         <div class="leading-tight">
           <div class="flex items-center gap-2">
             <span class="text-sm font-semibold tracking-wide">Jackpot</span>
-            
           </div>
           <p class="text-[12px] text-jp-muted">Your chats and last messages</p>
         </div>
       </div>
 
-      
       <div class="flex items-center gap-4 text-sm">
         <a href="index.html" class="text-jp-muted hover:text-jp-text">Explore</a>
         <a href="profile.html" class="text-jp-muted hover:text-jp-text">Profile</a>
-        <button onclick="logout()" class="text-jp-muted hover:text-red-600">Log-out</button>
+        <button type="button" onclick="logout()" class="text-jp-muted hover:text-red-600">Log-out</button>
       </div>
     </div>
   </nav>
@@ -77,7 +64,7 @@
 
         <div class="hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl bg-white border border-jp-border shadow-soft">
           <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-jp-ink text-xs font-bold"
-                style="background: rgba(212,175,55,0.18); border: 1px solid rgba(212,175,55,0.45);">
+            style="background:rgba(212,175,55,0.18);border:1px solid rgba(212,175,55,0.45);">
             ✓
           </span>
           <div class="leading-tight">
@@ -99,105 +86,99 @@
     </div>
   </footer>
 
-<script>
-const token = localStorage.getItem("token");
-const meId = Number(localStorage.getItem("userId"));
+  <script>
+    const token=localStorage.getItem("token");
+    const meId=Number(localStorage.getItem("userId"));
+    if(!token)window.location.href="login.html";
 
-if (!token) window.location.href = "login.html";
+    const setCount=n=>{
+      const c=document.getElementById("count");
+      if(c)c.textContent=String(n);
+    };
 
-function setCount(n) {
-  const el = document.getElementById("count");
-  if (el) el.textContent = String(n);
-}
+    const escapeHtml=str=>{
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    };
 
-async function loadMatches() {
-  const list = document.getElementById("list");
-  const empty = document.getElementById("empty");
-  list.innerHTML = "";
+    function openChat(e,id){
+      if(e)e.stopPropagation();
+      window.location.href=`chat.html?matchId=${id}`;
+    }
 
-  const res = await fetch("/api/matches", {
-    headers: { "Authorization": "Bearer " + token }
-  });
+    function logout(){
+      localStorage.clear();
+      window.location.href="login.html";
+    }
 
-  if (res.status === 401) {
-    localStorage.clear();
-    window.location.href = "login.html";
-    return;
-  }
+    async function loadMatches(){
+      const list=document.getElementById("list");
+      const empty=document.getElementById("empty");
+      list.innerHTML="";
 
-  const matches = await res.json();
-  setCount(matches.length);
+      const res=await fetch("/api/matches",{headers:{"Authorization":"Bearer "+token}});
+      if(res.status===401){
+        localStorage.clear();
+        window.location.href="login.html";
+        return;
+      }
 
-  if (!matches.length) {
-    empty.classList.remove("hidden");
-    return;
-  }
-  empty.classList.add("hidden");
+      const matches=await res.json();
+      setCount(matches.length);
 
-  matches.forEach(match => {
-    const other = (Number(match.user1) === meId) ? match.user2info : match.user1info;
-    const lastMsg = match.lastMessage || "";
+      if(!matches.length){
+        empty.classList.remove("hidden");
+        return;
+      }
+      empty.classList.add("hidden");
 
-    const el = document.createElement("div");
-    el.className =
-      "group p-3 sm:p-4 bg-jp-card border border-jp-border rounded-2xl shadow-soft " +
-      "hover:shadow-lift transition-shadow cursor-pointer flex items-center justify-between gap-3";
+      matches.forEach(match=>{
+        const other=(Number(match.user1)===meId)?match.user2info:match.user1info;
+        const lastMsg=match.lastMessage||"";
 
-    el.addEventListener("click", () => openChat(null, match.id));
+        const row=document.createElement("div");
+        row.className=
+          "group p-3 sm:p-4 bg-jp-card border border-jp-border rounded-2xl shadow-soft "+
+          "hover:shadow-lift transition-shadow cursor-pointer flex items-center justify-between gap-3";
 
-    el.innerHTML = `
-      <div class="flex items-center gap-3 min-w-0">
-        <img
-          src="${other?.avatar || "default-avatar.png"}"
-          onerror="this.src='default-avatar.png'"
-          class="w-12 h-12 rounded-xl object-cover border border-jp-border flex-none"
-          alt="avatar"
-        />
-        <div class="min-w-0">
-          <div class="text-sm font-semibold text-jp-text truncate">${other?.name || "No name"}</div>
-          <div class="text-xs text-jp-muted truncate max-w-[28rem]">${escapeHtml(lastMsg)}</div>
-        </div>
-      </div>
+        row.addEventListener("click",()=>openChat(null,match.id));
 
-      <div class="flex items-center gap-2 flex-none">
-        <button
-          class="px-3 py-1.5 rounded-xl text-sm font-semibold text-white bg-[#C9A227]
-                 hover:brightness-95 active:translate-y-px transition shadow-soft"
-          onclick="openChat(event, ${match.id})"
-        >
-          Open
-        </button>
-      </div>
-    `;
+        row.innerHTML=`
+          <div class="flex items-center gap-3 min-w-0">
+            <img
+              src="${other?.avatar||"default-avatar.png"}"
+              onerror="this.src='default-avatar.png'"
+              class="w-12 h-12 rounded-xl object-cover border border-jp-border flex-none"
+              alt="avatar"
+            />
+            <div class="min-w-0">
+              <div class="text-sm font-semibold text-jp-text truncate">${other?.name||"No name"}</div>
+              <div class="text-xs text-jp-muted truncate max-w-[28rem]">${escapeHtml(lastMsg)}</div>
+            </div>
+          </div>
 
-    list.appendChild(el);
-  });
-}
+          <div class="flex items-center gap-2 flex-none">
+            <button type="button"
+              class="px-3 py-1.5 rounded-xl text-sm font-semibold text-white bg-[#C9A227]
+                     hover:brightness-95 active:translate-y-px transition shadow-soft"
+              onclick="openChat(event,${match.id})">
+              Open
+            </button>
+          </div>
+        `;
 
-function openChat(e, id) {
-  if (e) e.stopPropagation();
-  window.location.href = `chat.html?matchId=${id}`;
-}
+        list.appendChild(row);
+      });
+    }
 
-function logout() {
-  localStorage.clear();
-  window.location.href = "login.html";
-}
+    const y=document.getElementById("year");
+    if(y)y.textContent=new Date().getFullYear();
 
-
-function escapeHtml(str) {
-  return String(str)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-const y = document.getElementById("year");
-if (y) y.textContent = new Date().getFullYear();
-
-loadMatches();
-</script>
+    loadMatches();
+  </script>
 </body>
 </html>
