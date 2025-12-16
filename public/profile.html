@@ -71,6 +71,7 @@
 </head>
 
 <body class="bg-jp-bg text-jp-text min-h-screen flex flex-col antialiased">
+
   <nav class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b border-jp-border">
     <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
       <a href="index.html" class="text-sm text-jp-muted hover:text-jp-text">← Back to users</a>
@@ -126,7 +127,7 @@
         <p id="err" class="text-xs text-red-600 mt-3 hidden"></p>
       </div>
 
-      <!-- Details -->
+      <!-- Profile details -->
       <div class="mt-6 bg-jp-card border border-jp-border shadow-soft rounded-2xl p-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-base font-semibold text-jp-text flex items-center gap-2">
@@ -134,25 +135,62 @@
             Profile details
           </h2>
 
-          <button id="editBtn" type="button"
-            class="text-sm px-3 py-1.5 rounded-xl border border-jp-border text-jp-muted hover:text-jp-text hover:border-[rgba(15,23,42,0.18)] transition">
-            Edit
-          </button>
+          <!-- ACTIONS (Edit OR Save/Cancel) -->
+          <div class="flex items-center gap-2">
+            <button id="editBtn" type="button"
+              class="text-sm px-3 py-1.5 rounded-xl border border-jp-border text-jp-muted hover:text-jp-text hover:border-[rgba(15,23,42,0.18)] transition">
+              Edit
+            </button>
+
+            <button id="saveBtn" type="button" class="hidden
+              text-sm px-3 py-1.5 rounded-xl font-semibold text-white bg-[#C9A227]
+              hover:brightness-95 active:translate-y-px transition shadow-soft">
+              Save
+            </button>
+
+            <button id="cancelBtn" type="button" class="hidden
+              text-sm px-3 py-1.5 rounded-xl border border-jp-border text-jp-muted
+              hover:text-jp-text hover:border-[rgba(15,23,42,0.18)] transition">
+              Cancel
+            </button>
+          </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-          <!-- Age -->
+        <!-- VIEW MODE (beautiful cards) -->
+        <div id="detailsView" class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+          <div class="bg-white border border-jp-border rounded-xl p-4">
+            <p class="text-jp-muted text-xs uppercase tracking-wide mb-1">Age</p>
+            <p id="ageView" class="text-jp-text font-medium">—</p>
+          </div>
+
+          <div class="bg-white border border-jp-border rounded-xl p-4">
+            <p class="text-jp-muted text-xs uppercase tracking-wide mb-1">Gender</p>
+            <p id="genderView" class="text-jp-text font-medium">—</p>
+          </div>
+
+          <div class="bg-white border border-jp-border rounded-xl p-4">
+            <p class="text-jp-muted text-xs uppercase tracking-wide mb-1">Faculty</p>
+            <p id="facultyView" class="text-jp-text font-medium">—</p>
+          </div>
+
+          <div class="bg-white border border-jp-border rounded-xl p-4">
+            <p class="text-jp-muted text-xs uppercase tracking-wide mb-1">Course</p>
+            <p id="courseView" class="text-jp-text font-medium">—</p>
+          </div>
+        </div>
+
+        <!-- EDIT MODE -->
+        <div id="detailsEdit" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div>
             <label class="block text-sm text-jp-muted mb-1">Age</label>
-            <input id="age" type="number" min="0"
+            <input id="ageEdit" type="number" min="0"
               class="w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
                      focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]" />
           </div>
 
-          <!-- Gender -->
           <div>
             <label class="block text-sm text-jp-muted mb-1">Gender</label>
-            <select id="gender"
+            <select id="genderEdit"
               class="w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
                      focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]">
               <option value="">—</option>
@@ -181,10 +219,9 @@
             </select>
           </div>
 
-          <!-- Course -->
           <div>
             <label class="block text-sm text-jp-muted mb-1">Course</label>
-            <select id="course"
+            <select id="courseEdit"
               class="w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
                      focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]">
               <option value="">Select your course</option>
@@ -208,23 +245,15 @@
         <!-- About -->
         <div class="mt-6">
           <p class="text-jp-muted text-xs uppercase tracking-wide mb-2">About me</p>
-          <textarea id="about" rows="3"
-            class="w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
-                   focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]"></textarea>
-        </div>
 
-        <!-- Buttons -->
-        <div id="editButtons" class="hidden mt-6 flex gap-3">
-          <button id="saveBtn" type="button"
-            class="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-[#C9A227]
-                   hover:brightness-95 active:translate-y-px transition shadow-soft">
-            Save
-          </button>
-          <button id="cancelBtn" type="button"
-            class="px-4 py-2 rounded-xl text-sm font-semibold border border-jp-border text-jp-muted
-                   hover:text-jp-text hover:border-[rgba(15,23,42,0.18)] transition">
-            Cancel
-          </button>
+          <p id="aboutView"
+             class="text-jp-text bg-white border border-jp-border rounded-xl p-4 leading-relaxed min-h-[60px]">
+            —
+          </p>
+
+          <textarea id="aboutEdit" rows="3"
+            class="hidden w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none mt-2
+                   focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]"></textarea>
         </div>
 
         <p id="editMsg" class="text-xs mt-3 hidden"></p>
@@ -256,6 +285,7 @@
       science: "Science",
       art: "Art"
     };
+    const GENDER_LABELS = { male: "Male", female: "Female", other: "Prefer not to say" };
 
     let editMode = false;
     let currentInterests = [];
@@ -271,23 +301,21 @@
       m.textContent = text;
     }
 
-    function setEditing(on) {
+    function setEditMode(on) {
       editMode = on;
 
-      // enable/disable fields
-      ["age","gender","faculty","course","about"].forEach(id => {
-        const node = el(id);
-        if (!node) return;
-        node.disabled = !on;
-        node.classList.toggle("opacity-80", !on);
-      });
+      el("detailsView").classList.toggle("hidden", on);
+      el("detailsEdit").classList.toggle("hidden", !on);
 
-      // chips
+      el("aboutView").classList.toggle("hidden", on);
+      el("aboutEdit").classList.toggle("hidden", !on);
+
+      // top-right actions
+      el("editBtn").classList.toggle("hidden", on);
+      el("saveBtn").classList.toggle("hidden", !on);
+      el("cancelBtn").classList.toggle("hidden", !on);
+
       renderInterests();
-
-      // buttons
-      el("editButtons").classList.toggle("hidden", !on);
-      el("editBtn").textContent = on ? "Cancel edit" : "Edit";
 
       if (!on) {
         el("editMsg").classList.add("hidden");
@@ -298,15 +326,12 @@
     function ensureFacultyOption(value) {
       const select = el("faculty");
       if (!select || !value) return;
-
       const exists = Array.from(select.options).some(o => o.value === value);
       if (exists) return;
 
-      // add unknown value as an option so it doesn't reset to ""
       const opt = document.createElement("option");
       opt.value = value;
       opt.textContent = value;
-      // put it after the first option
       select.insertBefore(opt, select.options[1] || null);
     }
 
@@ -317,27 +342,32 @@
         window.location.href = "login.html";
         return;
       }
-
       const me = await res.json();
 
       el("name").textContent = me.name || "No name";
       el("email").textContent = me.email || "";
       el("avatar").src = me.avatar || "default-avatar.png";
 
-      el("age").value = (me.age ?? "");
-      el("gender").value = (me.gender ?? "");
+      el("ageView").textContent = (me.age ?? "—");
+      el("genderView").textContent = me.gender ? (GENDER_LABELS[me.gender] || me.gender) : "—";
+      el("facultyView").textContent = (me.faculty || "—");
+      el("courseView").textContent = (me.course ?? "—");
+
+      el("aboutView").textContent = (me.about || "—");
+
+      el("ageEdit").value = (me.age ?? "");
+      el("genderEdit").value = (me.gender ?? "");
 
       ensureFacultyOption(me.faculty);
       el("faculty").value = (me.faculty ?? "");
 
-      el("course").value = (me.course ?? "");
-      el("about").value = (me.about ?? "");
+      el("courseEdit").value = (me.course ?? "");
+      el("aboutEdit").value = (me.about || "");
 
       currentInterests = Array.isArray(me.interests) ? me.interests : [];
       renderInterests();
 
-      // default: view mode
-      setEditing(false);
+      setEditMode(false);
     }
 
     function renderInterests() {
@@ -348,6 +378,7 @@
         const chip = document.createElement("button");
         chip.type = "button";
         chip.textContent = INTEREST_LABELS[value] || value;
+
         chip.className =
           "chip-base" +
           (currentInterests.includes(value) ? " chip-active" : "") +
@@ -373,11 +404,13 @@
         chip.type = "button";
         chip.textContent = value;
         chip.className = "chip-base chip-active" + (!editMode ? " chip-disabled" : "");
+
         chip.addEventListener("click", () => {
           if (!editMode) return;
           currentInterests = currentInterests.filter(x => x !== value);
           chip.remove();
         });
+
         box.appendChild(chip);
       });
     }
@@ -385,14 +418,14 @@
     async function saveProfile() {
       showEditMsg("Saving...", null);
 
-      const ageRaw = el("age").value.trim();
-      const courseRaw = el("course").value.trim();
+      const ageRaw = el("ageEdit").value.trim();
+      const courseRaw = el("courseEdit").value.trim();
 
       const payload = {
-        gender: el("gender").value || null,
+        gender: el("genderEdit").value || null,
         faculty: el("faculty").value || null,
         interests: currentInterests,
-        about: el("about").value || ""
+        about: el("aboutEdit").value || ""
       };
 
       if (ageRaw !== "") payload.age = Number(ageRaw);
@@ -417,12 +450,7 @@
           return;
         }
 
-        if (data?.status === "ok") {
-          showEditMsg("Profile updated.", true);
-        } else {
-          showEditMsg("Saved.", true);
-        }
-
+        showEditMsg("Profile updated.", true);
         await loadProfile();
       } catch (e) {
         showEditMsg("Save failed: " + (e?.message || String(e)), false);
@@ -474,21 +502,15 @@
     const y = el("year");
     if (y) y.textContent = new Date().getFullYear();
 
-    // wire buttons
+    // actions
     el("editBtn").addEventListener("click", () => {
-      if (editMode) {
-        // cancel edit
-        loadProfile();
-      } else {
-        setEditing(true);
-        showEditMsg("Editing enabled.", null);
-      }
+      setEditMode(true);
+      showEditMsg("Editing enabled.", null);
     });
 
     el("saveBtn").addEventListener("click", saveProfile);
     el("cancelBtn").addEventListener("click", loadProfile);
 
-    // initial
     loadProfile();
   </script>
 </body>
