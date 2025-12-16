@@ -1,60 +1,55 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Registration — Jackpot</title>
 
   <script>
-    tailwind.config = {theme: {extend: {colors: {
-            jp: {
-              bg: "#F7F7F5",
-              text: "#0F172A",
-              muted: "#475569",
-              card: "#FFFFFF",
-              border: "rgba(15, 23, 42, 0.10)",
-              gold: "#D4AF37",
-              gold2: "#FFD36A",
-              ink: "#111827"
-            }
-          },
-          boxShadow: {
-            soft: "0 12px 30px rgba(15, 23, 42, 0.08)",
-            lift: "0 18px 40px rgba(15, 23, 42, 0.12)"
-          }
-  }}}
+    tailwind.config={theme:{extend:{colors:{jp:{
+      bg:"#F7F7F5",
+      text:"#0F172A",
+      muted:"#475569",
+      card:"#FFFFFF",
+      border:"rgba(15, 23, 42, 0.10)",
+      gold:"#D4AF37",
+      gold2:"#FFD36A",
+      ink:"#111827"
+    }},boxShadow:{
+      soft:"0 12px 30px rgba(15, 23, 42, 0.08)",
+      lift:"0 18px 40px rgba(15, 23, 42, 0.12)"
+    }}}};
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    body {
+    body{
       background:
-        radial-gradient(900px 450px at 80% 0%, rgba(212,175,55,0.14), transparent 60%),
-        radial-gradient(700px 380px at 10% 10%, rgba(255,211,106,0.10), transparent 60%),
-        radial-gradient(rgba(15,23,42,0.06) 1px, transparent 1px);
-      background-size: auto, auto, 18px 18px;
-      background-position: 0 0, 0 0, 0 0;
+        radial-gradient(900px 450px at 80% 0%,rgba(212,175,55,0.14),transparent 60%),
+        radial-gradient(700px 380px at 10% 10%,rgba(255,211,106,0.10),transparent 60%),
+        radial-gradient(rgba(15,23,42,0.06) 1px,transparent 1px);
+      background-size:auto,auto,18px 18px;
+      background-position:0 0,0 0,0 0;
     }
-
-    .chip {
-      padding: 0.28rem 0.75rem;
-      font-size: 0.875rem;
-      border-radius: 9999px;
-      border: 1px solid rgba(15, 23, 42, 0.14);
-      background: #fff;
-      color: rgba(15, 23, 42, 0.72);
-      cursor: pointer;
-      transition: 0.16s ease;
-      user-select: none;
+    .chip{
+      padding:.28rem .75rem;
+      font-size:.875rem;
+      border-radius:9999px;
+      border:1px solid rgba(15,23,42,.14);
+      background:#fff;
+      color:rgba(15,23,42,.72);
+      cursor:pointer;
+      transition:.16s ease;
+      user-select:none;
     }
-    .chip:hover {
-      border-color: rgba(15, 23, 42, 0.22);
-      color: rgba(15, 23, 42, 0.90);
+    .chip:hover{
+      border-color:rgba(15,23,42,.22);
+      color:rgba(15,23,42,.90);
     }
-    .chip.active {
-      background: rgba(212,175,55,0.18);
-      border-color: rgba(212,175,55,0.55);
-      color: #111827;
+    .chip.active{
+      background:rgba(212,175,55,.18);
+      border-color:rgba(212,175,55,.55);
+      color:#111827;
     }
   </style>
 </head>
@@ -66,46 +61,46 @@
         <h1 class="text-2xl font-semibold tracking-wide">Registration</h1>
         <p class="text-sm text-jp-muted mt-1">Make an account</p>
       </div>
-      
+
       <div class="mt-6 space-y-4">
         <div>
           <label class="block text-sm text-jp-muted mb-1">Name</label>
           <input id="name" type="text"
-                 class="w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
-                        focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]"
-                 placeholder="Your name" autocomplete="name">
+            class="w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
+                   focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]"
+            placeholder="Your name" autocomplete="name"/>
         </div>
 
         <div>
           <label class="block text-sm text-jp-muted mb-1">Email</label>
           <input id="email" type="email"
-                 class="w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
-                        focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]"
-                 placeholder="you@example.com" autocomplete="email">
+            class="w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
+                   focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]"
+            placeholder="you@example.com" autocomplete="email"/>
         </div>
 
         <div>
           <label class="block text-sm text-jp-muted mb-1">Password</label>
           <input id="password" type="password"
-                 class="w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
-                        focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]"
-                 placeholder="Minimum of 6 symbols" autocomplete="new-password">
+            class="w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
+                   focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]"
+            placeholder="Minimum of 6 symbols" autocomplete="new-password"/>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-sm text-jp-muted mb-1">Age</label>
             <input id="age" type="number" min="16" max="99"
-                   class="w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
-                          focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]"
-                   placeholder="18">
+              class="w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
+                     focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]"
+              placeholder="18"/>
           </div>
 
           <div>
             <label class="block text-sm text-jp-muted mb-1">Gender</label>
             <select id="gender"
-                    class="w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
-                           focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]">
+              class="w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
+                     focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]">
               <option value="">Select gender</option>
               <option value="male">Male</option>
               <option value="female">Female</option>
@@ -117,8 +112,8 @@
         <div>
           <label class="block text-sm text-jp-muted mb-1">Faculty</label>
           <select id="faculty"
-                  class="w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
-                         focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]">
+            class="w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
+                   focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]">
             <option value="">Select faculty</option>
             <option value="Engineering">Faculty of Civil and Mechanical Engineering</option>
             <option value="NaturalSciences">Faculty of Natural Sciences and Technology</option>
@@ -135,8 +130,8 @@
         <div>
           <label class="block text-sm text-jp-muted mb-1">Course</label>
           <select id="course"
-                  class="w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
-                         focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]">
+            class="w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
+                   focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]">
             <option value="">Select your course</option>
             <option value="1">Bachelor 1</option>
             <option value="2">Bachelor 2</option>
@@ -167,62 +162,57 @@
             <button type="button" data-value="art" class="chip">Art</button>
           </div>
 
-          <input type="hidden" id="interests" />
+          <input type="hidden" id="interests"/>
           <p class="text-xs text-jp-muted mt-2">Choose your interests</p>
         </div>
 
         <div>
           <label class="block text-sm text-jp-muted mb-1">About me</label>
           <textarea id="about" rows="3"
-                    class="w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
-                           focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]"
-                    placeholder="Tell more about you"></textarea>
+            class="w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
+                   focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]"
+            placeholder="Tell more about you"></textarea>
         </div>
 
-        <button onclick="registerUser()"
-         class="w-full rounded-xl py-3 text-sm font-semibold text-white bg-[#C9A227] hover:brightness-95 active:translate-y-px transition shadow-soft">
+        <button type="button" onclick="registerUser()"
+          class="w-full rounded-xl py-3 text-sm font-semibold text-white bg-[#C9A227] hover:brightness-95 active:translate-y-px transition shadow-soft">
           Register
         </button>
-
       </div>
 
       <p class="text-xs text-jp-muted text-center mt-5">
         Already have an account?
-        <a href="login.html" class="text-jp-text hover:underline decoration-[rgba(212,175,55,0.8)] underline-offset-4">
-          Log-in
-        </a>
+        <a href="login.html" class="text-jp-text hover:underline decoration-[rgba(212,175,55,0.8)] underline-offset-4">Log-in</a>
       </p>
 
       <p id="error" class="text-xs text-red-600 text-center mt-3 hidden"></p>
       <p id="ok" class="text-xs text-emerald-700 text-center mt-3 hidden"></p>
     </div>
 
-    <p class="text-[11px] text-jp-muted text-center mt-4">
-      You can edit your profile later.
-    </p>
+    <p class="text-[11px] text-jp-muted text-center mt-4">You can edit your profile later.</p>
   </div>
 
   <script>
-    let selectedInterests = [];
+    let selectedInterests=[];
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const chips = document.querySelectorAll("#interest-chips .chip");
-      const countEl = document.getElementById("interestCount");
+    document.addEventListener("DOMContentLoaded",()=>{
+      const chips=[...document.querySelectorAll("#interest-chips .chip")];
+      const countEl=document.getElementById("interestCount");
 
-      function sync() {
-        document.getElementById("interests").value = JSON.stringify(selectedInterests);
-        if (countEl) countEl.textContent = String(selectedInterests.length);
-      }
+      const sync=()=>{
+        document.getElementById("interests").value=JSON.stringify(selectedInterests);
+        if(countEl)countEl.textContent=String(selectedInterests.length);
+      };
 
-      chips.forEach(chip => {
-        chip.addEventListener("click", () => {
-          const value = chip.dataset.value;
+      chips.forEach(chip=>{
+        chip.addEventListener("click",()=>{
+          const value=chip.dataset.value;
           chip.classList.toggle("active");
 
-          if (chip.classList.contains("active")) {
-            if (!selectedInterests.includes(value)) selectedInterests.push(value);
-          } else {
-            selectedInterests = selectedInterests.filter(x => x !== value);
+          if(chip.classList.contains("active")){
+            if(!selectedInterests.includes(value))selectedInterests.push(value);
+          }else{
+            selectedInterests=selectedInterests.filter(x=>x!==value);
           }
           sync();
         });
@@ -231,44 +221,45 @@
       sync();
     });
 
-    async function registerUser() {
-      const get = id => document.getElementById(id).value.trim();
+    async function registerUser(){
+      const v=id=>document.getElementById(id).value.trim();
+      const ageRaw=v("age");
+      const courseRaw=v("course");
 
-      const payload = {
-        name: get("name"),
-        email: get("email"),
-        password: get("password"),
-        age: Number(get("age")),
-        gender: get("gender"),
-        faculty: get("faculty"),
-        course: Number(get("course")),
-        interests: selectedInterests,
-        about: get("about")
+      const payload={
+        name:v("name"),
+        email:v("email"),
+        password:v("password"),
+        gender:v("gender")||null,
+        faculty:v("faculty")||null,
+        interests:selectedInterests,
+        about:v("about")
       };
+      if(ageRaw!=="")payload.age=Number(ageRaw);
+      if(courseRaw!=="")payload.course=Number(courseRaw);
 
-      const errorBox = document.getElementById("error");
-      const okBox = document.getElementById("ok");
+      const errorBox=document.getElementById("error");
+      const okBox=document.getElementById("ok");
       errorBox.classList.add("hidden");
       okBox.classList.add("hidden");
 
-      const res = await fetch("/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+      const res=await fetch("/api/register",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(payload)
       });
 
-      const data = await res.json();
+      const data=await res.json();
 
-      if (data.error) {
-        errorBox.textContent = data.error;
+      if(data.error){
+        errorBox.textContent=data.error;
         errorBox.classList.remove("hidden");
         return;
       }
 
-      okBox.textContent = "Registration was successful. You can log in now.";
+      okBox.textContent="Registration was successful. You can log in now.";
       okBox.classList.remove("hidden");
-
-      setTimeout(() => window.location.href = "login.html", 1200);
+      setTimeout(()=>window.location.href="login.html",1200);
     }
   </script>
 </body>
