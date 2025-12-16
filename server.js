@@ -108,6 +108,57 @@ app.get("/api/me", auth, (req, res) => {
   });
 });
 
+app.post("/api/update-profile", auth, (req, res) => {
+  const db = loadDB();
+  const user = db.users.find((u) => Number(u.id) === Number(req.userId));
+  if (!user) return res.status(404).json({ error: "User not found" });
+
+  const { age, gender, faculty, course, interests, about } = req.body;
+
+  // age
+  if (age !== undefined) {
+    const n = (age === null || age === "") ? null : Number(age);
+    if (n !== null && (!Number.isFinite(n) || n < 0 || n > 120)) {
+      return res.status(400).json({ error: "Invalid age" });
+    }
+    user.age = n;
+  }
+
+  // gender
+  if (gender !== undefined) {
+    user.gender = gender || null;
+  }
+
+  // faculty
+  if (faculty !== undefined) {
+    user.faculty = faculty || null;
+  }
+
+  // course
+  if (course !== undefined) {
+    const n = (course === null || course === "") ? null : Number(course);
+    if (n !== null && (!Number.isFinite(n) || n < 1 || n > 7)) {
+      return res.status(400).json({ error: "Invalid course" });
+    }
+    user.course = n;
+  }
+
+  // interests
+  if (interests !== undefined) {
+    if (!Array.isArray(interests)) {
+      return res.status(400).json({ error: "Interests must be an array" });
+    }
+    user.interests = interests.map(String);
+  }
+
+  // about
+  if (about !== undefined) {
+    user.about = String(about || "");
+  }
+
+  saveDB(db);
+  res.json({ status: "ok" });
+});
 
 app.post("/api/upload-avatar", auth, upload.single("avatar"), (req, res) => {
   const db = loadDB();
