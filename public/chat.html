@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Chat — Jackpot</title>
 
-  <!-- Tailwind config BEFORE CDN -->
+  
   <script>
     tailwind.config = {
       theme: {
@@ -45,7 +45,7 @@
 </head>
 
 <body class="bg-jp-bg text-jp-text min-h-screen flex flex-col antialiased">
-  <!-- Top bar -->
+  
   <nav class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b border-jp-border">
     <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
       <a href="matches.html" class="text-sm text-jp-muted hover:text-jp-text">← Back</a>
@@ -71,12 +71,12 @@
         </span>
       </div>
 
-      <!-- Messages panel -->
+      
       <div id="messages"
            class="flex-1 bg-jp-card rounded-2xl shadow-soft border border-jp-border p-4 overflow-y-auto space-y-2 text-sm">
       </div>
 
-      <!-- Composer -->
+      
       <div class="mt-4 flex gap-2 items-center">
         <input id="msg-input" type="text"
                class="flex-1 rounded-xl border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
@@ -97,7 +97,7 @@ const token = localStorage.getItem("token");
 const meId = Number(localStorage.getItem("userId"));
 if (!token) window.location.href = "login.html";
 
-// get matchId from URL
+
 const params = new URLSearchParams(window.location.search);
 const matchId = Number(params.get("matchId"));
 
@@ -106,7 +106,7 @@ if (!matchId) {
   window.location.href = "matches.html";
 }
 
-// ---------------- MATCH INFO ----------------
+
 async function loadMatchInfo() {
   const res = await fetch(`/api/match/${matchId}`, {
     headers: { "Authorization": "Bearer " + token }
@@ -124,7 +124,7 @@ async function loadMatchInfo() {
   document.getElementById("chat-title").textContent = other?.name || "Chat";
 }
 
-// ---------------- MESSAGES ----------------
+
 function appendMessage(m) {
   const box = document.getElementById("messages");
 
@@ -133,7 +133,7 @@ function appendMessage(m) {
   wrap.className = "flex " + (mine ? "justify-end" : "justify-start");
 
   const bubble = document.createElement("div");
-  // Minimal, readable “Jackpot” styling: mine = warm gold tint, theirs = neutral
+  
   bubble.className =
     "px-3 py-2 rounded-2xl max-w-[75%] border " +
     (mine
@@ -160,13 +160,13 @@ async function loadMessages() {
   msgs.forEach(appendMessage);
 }
 
-// ---------------- SEND ----------------
+
 async function sendMessage() {
   const input = document.getElementById("msg-input");
   const text = input.value.trim();
   if (!text) return;
 
-  // optimistic UI (быстрее ощущается)
+  
   appendMessage({ sender: meId, text });
 
   const res = await fetch(`/api/chat/${matchId}`, {
@@ -180,7 +180,7 @@ async function sendMessage() {
 
   if (res.ok) {
     input.value = "";
-    // refresh to sync with server (remove later when WebSockets)
+    
     loadMessages();
   } else {
     alert("Failed to send message");
@@ -188,23 +188,23 @@ async function sendMessage() {
   }
 }
 
-// ---------------- LOGOUT ----------------
+
 function logout() {
   localStorage.clear();
   window.location.href = "login.html";
 }
 
-// ---------------- EVENTS ----------------
+
 document.getElementById("send-btn").addEventListener("click", sendMessage);
 document.getElementById("msg-input").addEventListener("keydown", e => {
   if (e.key === "Enter") sendMessage();
 });
 
-// ---------------- INIT ----------------
+
 (async () => {
   await loadMatchInfo();
   await loadMessages();
-  setInterval(loadMessages, 1500); // remove when WebSockets enabled
+  setInterval(loadMessages, 1500); 
 })();
 </script>
 </body>
