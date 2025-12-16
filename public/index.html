@@ -1,53 +1,42 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Jackpot - users</title>
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            jp: {
-              bg: "#F7F7F5",
-              text: "#0F172A",
-              muted: "#475569",
-              card: "#FFFFFF",
-              border: "rgba(15, 23, 42, 0.10)",
-              gold: "#D4AF37",
-              gold2: "#FFD36A",
-              ink: "#111827"
-            }
-          },
-          boxShadow: {
-            soft: "0 12px 30px rgba(15, 23, 42, 0.08)",
-            lift: "0 18px 40px rgba(15, 23, 42, 0.12)"
-          }
-        }
-      }
-    }
+    <script>
+    tailwind.config={theme:{extend:{colors:{jp:{
+      bg:"#F7F7F5",
+      text:"#0F172A",
+      muted:"#475569",
+      card:"#FFFFFF",
+      border:"rgba(15, 23, 42, 0.10)",
+      gold:"#D4AF37",
+      gold2:"#FFD36A",
+      ink:"#111827"
+    }},boxShadow:{
+      soft:"0 12px 30px rgba(15, 23, 42, 0.08)",
+      lift:"0 18px 40px rgba(15, 23, 42, 0.12)"
+    }}}};
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    body {
+    body{
       background:
-        radial-gradient(900px 450px at 80% 0%, rgba(212,175,55,0.14), transparent 60%),
-        radial-gradient(700px 380px at 10% 10%, rgba(255,211,106,0.10), transparent 60%),
-        radial-gradient(rgba(15,23,42,0.06) 1px, transparent 1px);
-      background-size: auto, auto, 18px 18px;
-      background-position: 0 0, 0 0, 0 0;
+        radial-gradient(900px 450px at 80% 0%,rgba(212,175,55,0.14),transparent 60%),
+        radial-gradient(700px 380px at 10% 10%,rgba(255,211,106,0.10),transparent 60%),
+        radial-gradient(rgba(15,23,42,0.06) 1px,transparent 1px);
+      background-size:auto,auto,18px 18px;
+      background-position:0 0,0 0,0 0;
     }
   </style>
 </head>
 
 <body class="bg-jp-bg text-jp-text min-h-screen flex flex-col antialiased">
-  
   <nav class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b border-jp-border">
     <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-
       <div class="flex items-center gap-3">
         <div class="leading-tight">
           <div class="flex items-center gap-2">
@@ -57,16 +46,14 @@
         </div>
       </div>
 
-      
       <div class="flex items-center gap-4 text-sm">
         <a href="matches.html" class="text-jp-muted hover:text-jp-text">Chats</a>
         <a href="profile.html" class="text-jp-muted hover:text-jp-text">Profile</a>
-        <button onclick="logout()" class="text-jp-muted hover:text-red-600">Log-out</button>
+        <button type="button" onclick="logout()" class="text-jp-muted hover:text-red-600">Log-out</button>
       </div>
     </div>
   </nav>
 
-  
   <main class="flex-1">
     <div class="max-w-5xl mx-auto px-4 py-6">
       <div class="flex items-end justify-between gap-4 mb-6">
@@ -88,7 +75,6 @@
     </div>
   </footer>
 
-  
   <div id="profileModal" class="fixed inset-0 z-50 hidden">
     <div class="absolute inset-0 bg-black/40" onclick="closeProfile()"></div>
 
@@ -97,14 +83,14 @@
         <div class="p-4 flex items-start justify-between gap-3 border-b border-jp-border">
           <div class="flex items-center gap-3">
             <img id="pmAvatar" src="default-avatar.png" onerror="this.src='default-avatar.png'"
-                 class="w-14 h-14 rounded-xl object-cover border border-jp-border" />
+              class="w-14 h-14 rounded-xl object-cover border border-jp-border" alt="avatar"/>
             <div class="leading-tight">
               <div id="pmName" class="text-base font-semibold text-jp-text">Name</div>
               <div id="pmEmail" class="text-xs text-jp-muted">email</div>
             </div>
           </div>
 
-          <button class="text-sm text-jp-muted hover:text-jp-text" onclick="closeProfile()">✕</button>
+          <button type="button" class="text-sm text-jp-muted hover:text-jp-text" onclick="closeProfile()">✕</button>
         </div>
 
         <div class="p-4 space-y-3 text-sm">
@@ -138,16 +124,16 @@
           </div>
 
           <div class="pt-2 flex gap-2">
-            <button class="flex-1 rounded-lg py-2 text-sm text-jp-ink
-                           bg-gradient-to-b from-jp-gold2 to-jp-gold
-                           hover:brightness-95 active:translate-y-px transition"
-                    id="pmHideBtn">
+            <button type="button" id="pmHideBtn"
+              class="flex-1 rounded-lg py-2 text-sm text-jp-ink
+                     bg-gradient-to-b from-jp-gold2 to-jp-gold
+                     hover:brightness-95 active:translate-y-px transition">
               Hide
             </button>
 
-            <button class="flex-1 rounded-lg py-2 text-sm font-semibold border border-jp-border
-                           text-jp-muted hover:text-jp-text hover:border-[rgba(15,23,42,0.18)] transition-colors"
-                    id="pmLikeBtn">
+            <button type="button" id="pmLikeBtn"
+              class="flex-1 rounded-lg py-2 text-sm font-semibold border border-jp-border
+                     text-jp-muted hover:text-jp-text hover:border-[rgba(15,23,42,0.18)] transition-colors">
               Like
             </button>
           </div>
@@ -157,77 +143,62 @@
   </div>
 
   <script>
-    const token = localStorage.getItem("token");
-    const meId = Number(localStorage.getItem("userId"));
+    const token=localStorage.getItem("token");
+    const meId=Number(localStorage.getItem("userId"));
+    if(!token)window.location.href="login.html";
 
-    if (!token) {
-      window.location.href = "login.html";
-    }
+    const y=document.getElementById("year");
+    if(y)y.textContent=String(new Date().getFullYear());
 
-    const yearEl = document.getElementById("year");
-    if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+    let users=[];
 
-    let users = [];
+    const setCount=n=>{
+      const c=document.getElementById("count");
+      if(c)c.textContent=String(n);
+    };
 
-    async function loadUsers() {
-      const res = await fetch("/api/users", {
-        headers: { "Authorization": "Bearer " + token }
-      });
-
-      if (res.status === 401) {
+    async function loadUsers(){
+      const res=await fetch("/api/users",{headers:{"Authorization":"Bearer "+token}});
+      if(res.status===401){
         localStorage.clear();
-        window.location.href = "login.html";
+        window.location.href="login.html";
         return;
       }
-
-      users = await res.json();
+      users=await res.json();
       renderUsers();
     }
 
-    function setCount(n) {
-      const el = document.getElementById("count");
-      if (el) el.textContent = String(n);
-    }
-
-    function renderUsers() {
-      const container = document.getElementById("users");
-      const empty = document.getElementById("empty");
-
-      container.innerHTML = "";
+    function renderUsers(){
+      const container=document.getElementById("users");
+      const empty=document.getElementById("empty");
+      container.innerHTML="";
       setCount(users.length);
 
-      if (!users.length) {
+      if(!users.length){
         empty.classList.remove("hidden");
         return;
-      } else {
-        empty.classList.add("hidden");
       }
+      empty.classList.add("hidden");
 
-      users.forEach(user => {
-        const card = document.createElement("div");
+      users.forEach(u=>{
+        const card=document.createElement("div");
+        const avatarSrc=u.avatar||"default-avatar.png";
+        const name=u.name||"No name";
+        const ageOk=u.age!==undefined&&u.age!==null&&u.age!=="";
+        const titleText=ageOk?`${name}, ${u.age}`:name;
+        const facultyText=u.faculty||"—";
 
-        card.className =
-          "group rounded-2xl bg-jp-card border border-jp-border shadow-soft overflow-hidden flex flex-col " +
+        card.className=
+          "group rounded-2xl bg-jp-card border border-jp-border shadow-soft overflow-hidden flex flex-col "+
           "hover:shadow-lift transition-shadow cursor-pointer";
 
-        const avatarSrc = user.avatar || "default-avatar.png";
+        card.addEventListener("click",()=>openProfile(String(u.id)));
 
-        card.setAttribute("onclick", `openProfile('${user.id}')`);
-
-        const nameText = user.name || "No name";
-        const ageSuffix = (user.age !== undefined && user.age !== null && user.age !== "")
-          ? `, ${user.age}`
-          : "";
-        const titleText = `${nameText}${ageSuffix}`;
-
-        const facultyText = user.faculty || "—";
-
-        card.innerHTML = `
+        card.innerHTML=`
           <div class="relative">
-            <img src="${avatarSrc}" onerror="this.src='default-avatar.png'" class="w-full h-40 object-cover">
+            <img src="${avatarSrc}" onerror="this.src='default-avatar.png'" class="w-full h-40 object-cover" alt="photo">
             <div class="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                 style="background: radial-gradient(600px 220px at 50% 0%, rgba(212,175,55,0.18), transparent 55%);">
-            </div>
+              style="background:radial-gradient(600px 220px at 50% 0%,rgba(212,175,55,0.18),transparent 55%);"></div>
           </div>
 
           <div class="p-4 flex-1 flex flex-col">
@@ -237,18 +208,18 @@
             </div>
 
             <div class="mt-auto pt-3 flex gap-2">
-              <button
+              <button type="button"
                 class="flex-1 rounded-lg py-1.5 text-sm text-jp-ink
                        bg-gradient-to-b from-jp-gold2 to-jp-gold
                        hover:brightness-95 active:translate-y-px transition"
-                onclick="event.stopPropagation(); swipe('${user.id}','dislike')">
+                onclick="event.stopPropagation();swipe('${u.id}','dislike')">
                 Hide
               </button>
 
-              <button
+              <button type="button"
                 class="flex-1 rounded-lg py-1.5 text-sm font-semibold border border-jp-border text-jp-muted
                        hover:text-jp-text hover:border-[rgba(15,23,42,0.18)] transition-colors"
-                onclick="event.stopPropagation(); swipe('${user.id}','like')">
+                onclick="event.stopPropagation();swipe('${u.id}','like')">
                 Like
               </button>
             </div>
@@ -259,88 +230,85 @@
       });
     }
 
-    function openProfile(userId) {
-      const u = users.find(x => String(x.id) === String(userId));
-      if (!u) return;
+    function openProfile(userId){
+      const u=users.find(x=>String(x.id)===String(userId));
+      if(!u)return;
 
-      const modal = document.getElementById("profileModal");
+      const modal=document.getElementById("profileModal");
+      document.getElementById("pmAvatar").src=u.avatar||"default-avatar.png";
+      document.getElementById("pmName").textContent=u.name||"No name";
+      document.getElementById("pmEmail").textContent=u.email||"";
 
-      document.getElementById("pmAvatar").src = u.avatar || "default-avatar.png";
-      document.getElementById("pmName").textContent = u.name || "No name";
-      document.getElementById("pmEmail").textContent = u.email || "";
+      document.getElementById("pmAge").textContent=(u.age??"—");
+      document.getElementById("pmGender").textContent=(u.gender??"—");
+      document.getElementById("pmFaculty").textContent=(u.faculty??"—");
+      document.getElementById("pmCourse").textContent=(u.course??"—");
 
-      document.getElementById("pmAge").textContent = (u.age ?? "—");
-      document.getElementById("pmGender").textContent = (u.gender ?? "—");
-      document.getElementById("pmFaculty").textContent = (u.faculty ?? "—");
-      document.getElementById("pmCourse").textContent = (u.course ?? "—");
+      const interestsEl=document.getElementById("pmInterests");
+      interestsEl.innerHTML="";
 
-      const interestsEl = document.getElementById("pmInterests");
-      interestsEl.innerHTML = "";
-
-      if (Array.isArray(u.interests) && u.interests.length) {
-        u.interests.forEach(i => {
-          const chip = document.createElement("span");
-          chip.className = "text-xs px-2 py-1 rounded-full border border-jp-border bg-white text-jp-text";
-          chip.textContent = i;
+      if(Array.isArray(u.interests)&&u.interests.length){
+        u.interests.forEach(i=>{
+          const chip=document.createElement("span");
+          chip.className="text-xs px-2 py-1 rounded-full border border-jp-border bg-white text-jp-text";
+          chip.textContent=i;
           interestsEl.appendChild(chip);
         });
-      } else {
-        const chip = document.createElement("span");
-        chip.className = "text-xs text-jp-muted";
-        chip.textContent = "—";
+      }else{
+        const chip=document.createElement("span");
+        chip.className="text-xs text-jp-muted";
+        chip.textContent="—";
         interestsEl.appendChild(chip);
       }
 
-      document.getElementById("pmAbout").textContent = (u.about ?? "—");
+      document.getElementById("pmAbout").textContent=(u.about??"—");
 
-      const hideBtn = document.getElementById("pmHideBtn");
-      const likeBtn = document.getElementById("pmLikeBtn");
-
-      hideBtn.onclick = () => { closeProfile(); swipe(String(u.id), "dislike"); };
-      likeBtn.onclick = () => { closeProfile(); swipe(String(u.id), "like"); };
+      const hideBtn=document.getElementById("pmHideBtn");
+      const likeBtn=document.getElementById("pmLikeBtn");
+      hideBtn.onclick=()=>{closeProfile();swipe(String(u.id),"dislike");};
+      likeBtn.onclick=()=>{closeProfile();swipe(String(u.id),"like");};
 
       modal.classList.remove("hidden");
 
-      document.onkeydown = (e) => {
-        if (e.key === "Escape") closeProfile();
+      document.onkeydown=e=>{
+        if(e.key==="Escape")closeProfile();
       };
     }
 
-    function closeProfile() {
-      const modal = document.getElementById("profileModal");
-      modal.classList.add("hidden");
-      document.onkeydown = null;
+    function closeProfile(){
+      document.getElementById("profileModal").classList.add("hidden");
+      document.onkeydown=null;
     }
 
-    async function swipe(toUserId, type) {
-      const res = await fetch("/api/swipe", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + token
+    async function swipe(toUserId,type){
+      const res=await fetch("/api/swipe",{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+          "Authorization":"Bearer "+token
         },
-        body: JSON.stringify({
-          fromUserId: meId,
+        body:JSON.stringify({
+          fromUserId:meId,
           toUserId,
-          swipeType: type
+          swipeType:type
         })
       });
 
-      const data = await res.json();
+      const data=await res.json();
 
-      if (data.status === "match" || data.status === "already_matched") {
-        localStorage.setItem("matchId", data.matchId);
-        window.location.href = "chat.html";
+      if(data.status==="match"||data.status==="already_matched"){
+        localStorage.setItem("matchId",data.matchId);
+        window.location.href="chat.html";
         return;
       }
 
-      users = users.filter(u => String(u.id) !== String(toUserId));
+      users=users.filter(u=>String(u.id)!==String(toUserId));
       renderUsers();
     }
 
-    function logout() {
+    function logout(){
       localStorage.clear();
-      window.location.href = "login.html";
+      window.location.href="login.html";
     }
 
     loadUsers();
