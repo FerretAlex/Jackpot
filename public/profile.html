@@ -71,14 +71,13 @@
 </head>
 
 <body class="bg-jp-bg text-jp-text min-h-screen flex flex-col antialiased">
-  
   <nav class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b border-jp-border">
     <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
       <a href="index.html" class="text-sm text-jp-muted hover:text-jp-text">← Back to users</a>
 
       <div class="flex items-center gap-4 text-sm">
-        <a href="chat.html" class="text-jp-muted hover:text-jp-text">Chats</a>
-        <button onclick="logout()" class="text-jp-muted hover:text-red-600">Log-out</button>
+        <a href="matches.html" class="text-jp-muted hover:text-jp-text">Chats</a>
+        <button type="button" onclick="logout()" class="text-jp-muted hover:text-red-600">Log-out</button>
       </div>
     </div>
   </nav>
@@ -91,7 +90,7 @@
         </div>
       </div>
 
-      
+      <!-- Header card -->
       <div class="bg-jp-card border border-jp-border shadow-soft rounded-2xl p-6 flex flex-col sm:flex-row sm:items-center sm:gap-6">
         <img id="avatar" src="default-avatar.png"
              class="w-24 h-24 rounded-xl object-cover border border-jp-border mb-4 sm:mb-0"
@@ -104,36 +103,30 @@
         </div>
       </div>
 
-      
+      <!-- Upload avatar -->
       <div class="mt-6 bg-jp-card border border-jp-border shadow-soft rounded-2xl p-6">
         <div class="flex items-start justify-between gap-4">
           <div>
             <h2 class="text-sm font-semibold text-jp-text">Update avatar</h2>
-            <p class="text-xs text-jp-muted mt-1">
-              Choose an image (jpg/png)
-            </p>
+            <p class="text-xs text-jp-muted mt-1">Choose an image (jpg/png)</p>
           </div>
         </div>
 
         <div class="mt-4 flex flex-col sm:flex-row sm:items-center gap-3">
-          <input id="file" type="file" class="text-sm text-jp-muted" />
-          <button onclick="uploadAvatar()"
-          class="inline-flex items-center justify-center px-2.5 py-1 rounded-lg text-[11px] font-semibold
-         text-white bg-[#C9A227] border border-[rgba(15,23,42,0.10)]
-         hover:brightness-95 active:translate-y-px transition shadow-soft">
-          Upload new photo
+          <input id="file" type="file" accept="image/*" class="text-sm text-jp-muted" />
+          <button type="button" onclick="uploadAvatar()"
+            class="inline-flex items-center justify-center px-3 py-2 rounded-lg text-xs font-semibold
+                   text-white bg-[#C9A227] border border-[rgba(15,23,42,0.10)]
+                   hover:brightness-95 active:translate-y-px transition shadow-soft">
+            Upload new photo
           </button>
-
-
-
-</button>
         </div>
 
         <p id="msg" class="text-xs text-emerald-700 mt-3 hidden"></p>
         <p id="err" class="text-xs text-red-600 mt-3 hidden"></p>
       </div>
 
-      
+      <!-- Details -->
       <div class="mt-6 bg-jp-card border border-jp-border shadow-soft rounded-2xl p-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-base font-semibold text-jp-text flex items-center gap-2">
@@ -141,62 +134,59 @@
             Profile details
           </h2>
 
-          <button id="editBtn"
-                  class="text-sm px-3 py-1.5 rounded-xl border border-jp-border text-jp-muted hover:text-jp-text hover:border-[rgba(15,23,42,0.18)] transition">
+          <button id="editBtn" type="button"
+            class="text-sm px-3 py-1.5 rounded-xl border border-jp-border text-jp-muted hover:text-jp-text hover:border-[rgba(15,23,42,0.18)] transition">
             Edit
           </button>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-          
-          <div class="bg-white border border-jp-border rounded-xl p-4">
-            <p class="text-jp-muted text-xs uppercase tracking-wide mb-1">Age</p>
-            <p id="ageView" class="text-jp-text font-medium">—</p>
-            <input id="ageEdit" type="number"
-                   class="hidden w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
-                          focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]" />
+          <!-- Age -->
+          <div>
+            <label class="block text-sm text-jp-muted mb-1">Age</label>
+            <input id="age" type="number" min="0"
+              class="w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
+                     focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]" />
           </div>
 
-          
-          <div class="bg-white border border-jp-border rounded-xl p-4">
-            <p class="text-jp-muted text-xs uppercase tracking-wide mb-1">Gender</p>
-            <p id="genderView" class="text-jp-text font-medium">—</p>
-            <select id="genderEdit"
-                    class="hidden w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
-                           focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]">
+          <!-- Gender -->
+          <div>
+            <label class="block text-sm text-jp-muted mb-1">Gender</label>
+            <select id="gender"
+              class="w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
+                     focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]">
+              <option value="">—</option>
               <option value="male">Male</option>
               <option value="female">Female</option>
               <option value="other">Prefer not to say</option>
             </select>
           </div>
 
-          
-          <div class="bg-white border border-jp-border rounded-xl p-4">
-            <p class="text-jp-muted text-xs uppercase tracking-wide mb-1">Faculty</p>
-            <p id="facultyView" class="text-jp-text font-medium">—</p>
-            <select id="facultyEdit"
-                    class="hidden w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
+          <!-- Faculty (YOUR BLOCK) -->
+          <div>
+            <label class="block text-sm text-jp-muted mb-1">Faculty</label>
+            <select id="faculty"
+                    class="w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
                            focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]">
               <option value="">Select faculty</option>
               <option value="Engineering">Faculty of Civil and Mechanical Engineering</option>
               <option value="NaturalSciences">Faculty of Natural Sciences and Technology</option>
               <option value="IT">Faculty of Computer Science, Information Technology and Energy</option>
               <option value="Economics">Faculty of Engineering Economics and Management</option>
-              <option value="Management">Institute of Architecture and Design</option>
-              <option value="Architecture">Riga Business School</option>
+              <option value="Architecture">Institute of Architecture and Design</option>
+              <option value="Business">Riga Business School</option>
               <option value="MaritimeAcademy">Latvian Maritime Academy of Riga Technical University</option>
               <option value="Liepaja">RTU Liepaja</option>
               <option value="Rezekne">RTU Rezekne</option>
             </select>
           </div>
 
-          
-          <div class="bg-white border border-jp-border rounded-xl p-4">
-            <p class="text-jp-muted text-xs uppercase tracking-wide mb-1">Course</p>
-            <p id="courseView" class="text-jp-text font-medium">—</p>
-            <select id="courseEdit"
-                    class="hidden w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
-                           focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]">
+          <!-- Course -->
+          <div>
+            <label class="block text-sm text-jp-muted mb-1">Course</label>
+            <select id="course"
+              class="w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
+                     focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]">
               <option value="">Select your course</option>
               <option value="1">Bachelor 1</option>
               <option value="2">Bachelor 2</option>
@@ -209,34 +199,28 @@
           </div>
         </div>
 
-        
+        <!-- Interests -->
         <div class="mt-6">
           <p class="text-jp-muted text-xs uppercase tracking-wide mb-2">Interests</p>
           <div id="interestsBox" class="flex flex-wrap gap-2"></div>
         </div>
 
-        
+        <!-- About -->
         <div class="mt-6">
           <p class="text-jp-muted text-xs uppercase tracking-wide mb-2">About me</p>
-          <p id="aboutView"
-             class="text-jp-text bg-white border border-jp-border rounded-xl p-4 leading-relaxed min-h-[60px]">
-            —
-          </p>
-          <textarea id="aboutEdit" rows="3"
-            class="hidden w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none mt-2
+          <textarea id="about" rows="3"
+            class="w-full rounded-lg border border-jp-border bg-white px-3 py-2 text-sm text-jp-text outline-none
                    focus:ring-2 focus:ring-[rgba(212,175,55,0.35)]"></textarea>
         </div>
 
-        
+        <!-- Buttons -->
         <div id="editButtons" class="hidden mt-6 flex gap-3">
-  
-
-          <button onclick="saveInline()"
-            class="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-[#C9A227] border border-jp-border text-jp-muted
-                   hover:text-jp-text hover:border-[rgba(15,23,42,0.18)] transition">
+          <button id="saveBtn" type="button"
+            class="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-[#C9A227]
+                   hover:brightness-95 active:translate-y-px transition shadow-soft">
             Save
           </button>
-          <button onclick="cancelInline()"
+          <button id="cancelBtn" type="button"
             class="px-4 py-2 rounded-xl text-sm font-semibold border border-jp-border text-jp-muted
                    hover:text-jp-text hover:border-[rgba(15,23,42,0.18)] transition">
             Cancel
@@ -255,245 +239,257 @@
     </div>
   </footer>
 
-<script>
-const token = localStorage.getItem("token");
-if (!token) window.location.href = "login.html";
+  <script>
+    const token = localStorage.getItem("token");
+    if (!token) window.location.href = "login.html";
 
-let editMode = false;
-let currentInterests = [];
+    const ALL_INTERESTS = ["sports","music","movies","BoardGaming","CompGaming","travel","food","astrology","science","art"];
+    const INTEREST_LABELS = {
+      sports: "Sport",
+      music: "Music",
+      movies: "Movies",
+      BoardGaming: "Board games",
+      CompGaming: "Computer games",
+      travel: "Travel",
+      food: "Food",
+      astrology: "Astrology",
+      science: "Science",
+      art: "Art"
+    };
 
+    let editMode = false;
+    let currentInterests = [];
 
-const ALL_INTERESTS = ["sports","music","movies","BoardGaming","CompGaming","travel","food","astrology","science","art"];
-const INTEREST_LABELS = {
-  sports: "Sport",
-  music: "Music",
-  movies: "Movies",
-  BoardGaming: "Board games",
-  CompGaming: "Computer games",
-  travel: "Travel",
-  food: "Food",
-  astrology: "Astrology",
-  science: "Science",
-  art: "Art"
-};
-const GENDER_LABELS = { male: "Male", female: "Female", other: "Prefer not to say" };
+    const el = (id) => document.getElementById(id);
 
-async function loadProfile() {
-  const res = await fetch("/api/me", { headers: { "Authorization": "Bearer " + token } });
+    function showEditMsg(text, ok = null) {
+      const m = el("editMsg");
+      m.classList.remove("hidden", "text-red-600", "text-emerald-700", "text-jp-muted");
+      if (ok === true) m.classList.add("text-emerald-700");
+      else if (ok === false) m.classList.add("text-red-600");
+      else m.classList.add("text-jp-muted");
+      m.textContent = text;
+    }
 
-  if (res.status === 401) {
-    localStorage.clear();
-    window.location.href = "login.html";
-    return;
-  }
+    function setEditing(on) {
+      editMode = on;
 
-  const me = await res.json();
+      // enable/disable fields
+      ["age","gender","faculty","course","about"].forEach(id => {
+        const node = el(id);
+        if (!node) return;
+        node.disabled = !on;
+        node.classList.toggle("opacity-80", !on);
+      });
 
-  document.getElementById("name").textContent = me.name || "No name";
-  document.getElementById("email").textContent = me.email || "";
-  document.getElementById("avatar").src = me.avatar || "default-avatar.png";
+      // chips
+      renderInterests();
 
-  document.getElementById("ageView").textContent = me.age ?? "—";
-  document.getElementById("ageEdit").value = me.age ?? "";
+      // buttons
+      el("editButtons").classList.toggle("hidden", !on);
+      el("editBtn").textContent = on ? "Cancel edit" : "Edit";
 
-  const genderLabel = me.gender ? (GENDER_LABELS[me.gender] || me.gender) : "—";
-  document.getElementById("genderView").textContent = genderLabel;
-  document.getElementById("genderEdit").value = me.gender || "";
+      if (!on) {
+        el("editMsg").classList.add("hidden");
+        el("editMsg").textContent = "";
+      }
+    }
 
-  document.getElementById("facultyView").textContent = me.faculty || "—";
-  document.getElementById("facultyEdit").value = me.faculty || "";
+    function ensureFacultyOption(value) {
+      const select = el("faculty");
+      if (!select || !value) return;
 
-  document.getElementById("courseView").textContent = me.course ?? "—";
-  document.getElementById("courseEdit").value = me.course ?? "";
+      const exists = Array.from(select.options).some(o => o.value === value);
+      if (exists) return;
 
-  document.getElementById("aboutView").textContent = me.about || "—";
-  document.getElementById("aboutEdit").value = me.about || "";
+      // add unknown value as an option so it doesn't reset to ""
+      const opt = document.createElement("option");
+      opt.value = value;
+      opt.textContent = value;
+      // put it after the first option
+      select.insertBefore(opt, select.options[1] || null);
+    }
 
-  currentInterests = Array.isArray(me.interests) ? me.interests : [];
-  renderInterests();
+    async function loadProfile() {
+      const res = await fetch("/api/me", { headers: { "Authorization": "Bearer " + token } });
+      if (res.status === 401) {
+        localStorage.clear();
+        window.location.href = "login.html";
+        return;
+      }
 
-  if (!editMode) {
-    ["age","gender","faculty","course","about"].forEach(toggleFieldToView);
-    document.getElementById("editButtons").classList.add("hidden");
-    document.getElementById("editBtn").textContent = "Edit";
-  }
-}
+      const me = await res.json();
 
-function renderInterests() {
-  const box = document.getElementById("interestsBox");
-  box.innerHTML = "";
+      el("name").textContent = me.name || "No name";
+      el("email").textContent = me.email || "";
+      el("avatar").src = me.avatar || "default-avatar.png";
 
-  ALL_INTERESTS.forEach(value => {
-    const chip = document.createElement("button");
-    chip.type = "button";
-    chip.dataset.value = value;
-    chip.textContent = INTEREST_LABELS[value] || value;
+      el("age").value = (me.age ?? "");
+      el("gender").value = (me.gender ?? "");
 
-    chip.className = "chip-base" + (currentInterests.includes(value) ? " chip-active" : "") + (!editMode ? " chip-disabled" : "");
+      ensureFacultyOption(me.faculty);
+      el("faculty").value = (me.faculty ?? "");
 
-    chip.addEventListener("click", () => {
-      if (!editMode) return;
+      el("course").value = (me.course ?? "");
+      el("about").value = (me.about ?? "");
 
-      if (currentInterests.includes(value)) {
-        currentInterests = currentInterests.filter(x => x !== value);
-        chip.classList.remove("chip-active");
+      currentInterests = Array.isArray(me.interests) ? me.interests : [];
+      renderInterests();
+
+      // default: view mode
+      setEditing(false);
+    }
+
+    function renderInterests() {
+      const box = el("interestsBox");
+      box.innerHTML = "";
+
+      ALL_INTERESTS.forEach(value => {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.textContent = INTEREST_LABELS[value] || value;
+        chip.className =
+          "chip-base" +
+          (currentInterests.includes(value) ? " chip-active" : "") +
+          (!editMode ? " chip-disabled" : "");
+
+        chip.addEventListener("click", () => {
+          if (!editMode) return;
+          if (currentInterests.includes(value)) {
+            currentInterests = currentInterests.filter(x => x !== value);
+            chip.classList.remove("chip-active");
+          } else {
+            currentInterests.push(value);
+            chip.classList.add("chip-active");
+          }
+        });
+
+        box.appendChild(chip);
+      });
+
+      const extra = currentInterests.filter(x => !ALL_INTERESTS.includes(x));
+      extra.forEach(value => {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.textContent = value;
+        chip.className = "chip-base chip-active" + (!editMode ? " chip-disabled" : "");
+        chip.addEventListener("click", () => {
+          if (!editMode) return;
+          currentInterests = currentInterests.filter(x => x !== value);
+          chip.remove();
+        });
+        box.appendChild(chip);
+      });
+    }
+
+    async function saveProfile() {
+      showEditMsg("Saving...", null);
+
+      const ageRaw = el("age").value.trim();
+      const courseRaw = el("course").value.trim();
+
+      const payload = {
+        gender: el("gender").value || null,
+        faculty: el("faculty").value || null,
+        interests: currentInterests,
+        about: el("about").value || ""
+      };
+
+      if (ageRaw !== "") payload.age = Number(ageRaw);
+      if (courseRaw !== "") payload.course = Number(courseRaw);
+
+      try {
+        const res = await fetch("/api/update-profile", {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer " + token,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const text = await res.text();
+        let data = null;
+        try { data = JSON.parse(text); } catch (_) {}
+
+        if (!res.ok) {
+          showEditMsg(`Save failed (${res.status}): ${data?.error || text || "No details"}`, false);
+          return;
+        }
+
+        if (data?.status === "ok") {
+          showEditMsg("Profile updated.", true);
+        } else {
+          showEditMsg("Saved.", true);
+        }
+
+        await loadProfile();
+      } catch (e) {
+        showEditMsg("Save failed: " + (e?.message || String(e)), false);
+      }
+    }
+
+    async function uploadAvatar() {
+      const fileInput = el("file");
+      const msg = el("msg");
+      const err = el("err");
+      msg.classList.add("hidden");
+      err.classList.add("hidden");
+
+      if (!fileInput.files.length) {
+        err.textContent = "Choose a file.";
+        err.classList.remove("hidden");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("avatar", fileInput.files[0]);
+
+      const res = await fetch("/api/upload-avatar", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + token },
+        body: formData
+      });
+
+      const text = await res.text();
+      let data = null;
+      try { data = JSON.parse(text); } catch (_) {}
+
+      if (res.ok && data?.avatar) {
+        el("avatar").src = data.avatar;
+        msg.textContent = "Avatar updated.";
+        msg.classList.remove("hidden");
       } else {
-        currentInterests.push(value);
-        chip.classList.add("chip-active");
+        err.textContent = data?.error || text || "Upload failed.";
+        err.classList.remove("hidden");
+      }
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = "login.html";
+    }
+
+    // footer year
+    const y = el("year");
+    if (y) y.textContent = new Date().getFullYear();
+
+    // wire buttons
+    el("editBtn").addEventListener("click", () => {
+      if (editMode) {
+        // cancel edit
+        loadProfile();
+      } else {
+        setEditing(true);
+        showEditMsg("Editing enabled.", null);
       }
     });
 
-    box.appendChild(chip);
-  });
+    el("saveBtn").addEventListener("click", saveProfile);
+    el("cancelBtn").addEventListener("click", loadProfile);
 
-  const extra = currentInterests.filter(x => !ALL_INTERESTS.includes(x));
-  extra.forEach(value => {
-    const chip = document.createElement("button");
-    chip.type = "button";
-    chip.dataset.value = value;
-    chip.textContent = value;
-    chip.className = "chip-base chip-active" + (!editMode ? " chip-disabled" : "");
-
-    chip.addEventListener("click", () => {
-      if (!editMode) return;
-      currentInterests = currentInterests.filter(x => x !== value);
-      chip.remove();
-    });
-
-    box.appendChild(chip);
-  });
-
-  if (ALL_INTERESTS.length === 0 && currentInterests.length === 0) {
-    const empty = document.createElement("span");
-    empty.textContent = "—";
-    empty.className = "text-jp-muted text-sm";
-    box.appendChild(empty);
-  }
-}
-
-function enableInlineEdit() {
-  editMode = true;
-  document.getElementById("editButtons").classList.remove("hidden");
-  document.getElementById("editBtn").textContent = "Cancel edit";
-
-  ["age","gender","faculty","course","about"].forEach(toggleFieldToEdit);
-  renderInterests();
-}
-
-function toggleFieldToEdit(field) {
-  const viewEl = document.getElementById(field + "View");
-  const editEl = document.getElementById(field + "Edit");
-  if (!viewEl || !editEl) return;
-  viewEl.classList.add("hidden");
-  editEl.classList.remove("hidden");
-}
-
-function toggleFieldToView(field) {
-  const viewEl = document.getElementById(field + "View");
-  const editEl = document.getElementById(field + "Edit");
-  if (!viewEl || !editEl) return;
-  editEl.classList.add("hidden");
-  viewEl.classList.remove("hidden");
-}
-
-function cancelInline() {
-  editMode = false;
-  document.getElementById("editButtons").classList.add("hidden");
-  document.getElementById("editBtn").textContent = "Edit";
-  loadProfile();
-  renderInterests();
-}
-
-async function saveInline() {
-  const msg = document.getElementById("editMsg");
-  msg.classList.add("hidden");
-  msg.textContent = "";
-  msg.className = "text-xs mt-3 hidden";
-
-  const payload = {
-    age: Number(document.getElementById("ageEdit").value),
-    gender: document.getElementById("genderEdit").value,
-    faculty: document.getElementById("facultyEdit").value,
-    course: Number(document.getElementById("courseEdit").value),
-    interests: currentInterests,
-    about: document.getElementById("aboutEdit").value
-  };
-
-  const res = await fetch("/api/update-profile", {
-    method: "POST",
-    headers: {
-      "Authorization": "Bearer " + token,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(payload)
-  });
-
-  const data = await res.json();
-
-  msg.classList.remove("hidden");
-  if (data.status === "ok") {
-    msg.textContent = "Profile updated.";
-    msg.classList.add("text-emerald-700");
-    editMode = false;
-    document.getElementById("editButtons").classList.add("hidden");
-    document.getElementById("editBtn").textContent = "Edit";
-    await loadProfile();
-    renderInterests();
-  } else {
-    msg.textContent = data.error || "Something went wrong.";
-    msg.classList.add("text-red-600");
-  }
-}
-
-async function uploadAvatar() {
-  const fileInput = document.getElementById("file");
-  const msg = document.getElementById("msg");
-  const err = document.getElementById("err");
-  msg.classList.add("hidden");
-  err.classList.add("hidden");
-
-  if (!fileInput.files.length) {
-    err.textContent = "Choose a file.";
-    err.classList.remove("hidden");
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append("avatar", fileInput.files[0]);
-
-  const res = await fetch("/api/upload-avatar", {
-    method: "POST",
-    headers: { "Authorization": "Bearer " + token },
-    body: formData
-  });
-
-  const data = await res.json();
-
-  if (data.avatar) {
-    document.getElementById("avatar").src = data.avatar;
-    msg.textContent = "Avatar updated.";
-    msg.classList.remove("hidden");
-  } else {
-    err.textContent = data.error || "Upload failed.";
-    err.classList.remove("hidden");
-  }
-}
-
-function logout() {
-  localStorage.clear();
-  window.location.href = "login.html";
-}
-
-
-const y = document.getElementById("year");
-if (y) y.textContent = new Date().getFullYear();
-
-loadProfile();
-
-document.getElementById("editBtn").addEventListener("click", () => {
-  if (editMode) cancelInline();
-  else enableInlineEdit();
-});
-</script>
+    // initial
+    loadProfile();
+  </script>
 </body>
 </html>
