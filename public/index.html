@@ -47,13 +47,11 @@
   <!-- Top bar -->
   <nav class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b border-jp-border">
     <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-      
+
       <div class="flex items-center gap-3">
-        
         <div class="leading-tight">
           <div class="flex items-center gap-2">
             <span class="text-sm font-semibold tracking-wide">Jackpot</span>
-            
           </div>
           <p class="text-[12px] text-jp-muted">Find lucky matches</p>
         </div>
@@ -76,20 +74,87 @@
           <h1 class="text-xl font-semibold">Choose people you are interested in</h1>
           <p class="text-sm text-jp-muted mt-1">Check you luck in matching</p>
         </div>
-
       </div>
 
       <div id="users" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
       <p id="empty" class="text-sm text-jp-muted mt-4 hidden">No more users...</p>
     </div>
   </main>
-<footer class="mt-auto border-t border-jp-border bg-white/70 backdrop-blur">
+
+  <footer class="mt-auto border-t border-jp-border bg-white/70 backdrop-blur">
     <div class="max-w-5xl mx-auto px-4 py-4 text-xs text-jp-muted flex items-center justify-between gap-3">
       <p>© <span id="year"></span> Jackpot</p>
       <p class="text-right">December, 2025</p>
     </div>
   </footer>
 
+  <!-- Profile modal -->
+  <div id="profileModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/40" onclick="closeProfile()"></div>
+
+    <div class="relative mx-auto mt-16 w-[92%] max-w-lg">
+      <div class="rounded-2xl bg-white border border-jp-border shadow-lift overflow-hidden">
+        <div class="p-4 flex items-start justify-between gap-3 border-b border-jp-border">
+          <div class="flex items-center gap-3">
+            <img id="pmAvatar" src="default-avatar.png" onerror="this.src='default-avatar.png'"
+                 class="w-14 h-14 rounded-xl object-cover border border-jp-border" />
+            <div class="leading-tight">
+              <div id="pmName" class="text-base font-semibold text-jp-text">Name</div>
+              <div id="pmEmail" class="text-xs text-jp-muted">email</div>
+            </div>
+          </div>
+
+          <button class="text-sm text-jp-muted hover:text-jp-text" onclick="closeProfile()">✕</button>
+        </div>
+
+        <div class="p-4 space-y-3 text-sm">
+          <div class="grid grid-cols-2 gap-3">
+            <div class="rounded-xl border border-jp-border p-3">
+              <div class="text-xs text-jp-muted">Age</div>
+              <div id="pmAge" class="font-semibold text-jp-text">—</div>
+            </div>
+            <div class="rounded-xl border border-jp-border p-3">
+              <div class="text-xs text-jp-muted">Gender</div>
+              <div id="pmGender" class="font-semibold text-jp-text">—</div>
+            </div>
+            <div class="rounded-xl border border-jp-border p-3">
+              <div class="text-xs text-jp-muted">Faculty</div>
+              <div id="pmFaculty" class="font-semibold text-jp-text">—</div>
+            </div>
+            <div class="rounded-xl border border-jp-border p-3">
+              <div class="text-xs text-jp-muted">Course</div>
+              <div id="pmCourse" class="font-semibold text-jp-text">—</div>
+            </div>
+          </div>
+
+          <div>
+            <div class="text-xs text-jp-muted mb-1">Interests</div>
+            <div id="pmInterests" class="flex flex-wrap gap-2"></div>
+          </div>
+
+          <div>
+            <div class="text-xs text-jp-muted mb-1">About</div>
+            <div id="pmAbout" class="text-jp-text whitespace-pre-wrap">—</div>
+          </div>
+
+          <div class="pt-2 flex gap-2">
+            <button class="flex-1 rounded-lg py-2 text-sm text-jp-ink
+                           bg-gradient-to-b from-jp-gold2 to-jp-gold
+                           hover:brightness-95 active:translate-y-px transition"
+                    id="pmHideBtn">
+              Hide
+            </button>
+
+            <button class="flex-1 rounded-lg py-2 text-sm font-semibold border border-jp-border
+                           text-jp-muted hover:text-jp-text hover:border-[rgba(15,23,42,0.18)] transition-colors"
+                    id="pmLikeBtn">
+              Like
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script>
     const token = localStorage.getItem("token");
@@ -98,6 +163,9 @@
     if (!token) {
       window.location.href = "login.html";
     }
+
+    const yearEl = document.getElementById("year");
+    if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
     let users = [];
 
@@ -138,18 +206,25 @@
       users.forEach(user => {
         const card = document.createElement("div");
 
-        
         card.className =
           "group rounded-2xl bg-jp-card border border-jp-border shadow-soft overflow-hidden flex flex-col " +
-          "hover:shadow-lift transition-shadow";
+          "hover:shadow-lift transition-shadow cursor-pointer";
 
         const avatarSrc = user.avatar || "default-avatar.png";
+
+        card.setAttribute("onclick", `openProfile('${user.id}')`);
+
+        const nameText = user.name || "No name";
+        const ageSuffix = (user.age !== undefined && user.age !== null && user.age !== "")
+          ? `, ${user.age}`
+          : "";
+        const titleText = `${nameText}${ageSuffix}`;
+
+        const facultyText = user.faculty || "—";
 
         card.innerHTML = `
           <div class="relative">
             <img src="${avatarSrc}" onerror="this.src='default-avatar.png'" class="w-full h-40 object-cover">
-            
-            <!-- Subtle gold hover glow -->
             <div class="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
                  style="background: radial-gradient(600px 220px at 50% 0%, rgba(212,175,55,0.18), transparent 55%);">
             </div>
@@ -157,23 +232,23 @@
 
           <div class="p-4 flex-1 flex flex-col">
             <div class="mb-1">
-              <p class="text-sm font-semibold text-jp-text">${user.name || "No name"}</p>
-              <p class="text-xs text-jp-muted truncate" title="${user.email}">${user.email}</p>
+              <p class="text-sm font-semibold text-jp-text">${titleText}</p>
+              <p class="text-xs text-jp-muted truncate" title="${facultyText}">${facultyText}</p>
             </div>
 
             <div class="mt-auto pt-3 flex gap-2">
               <button
-                    class="flex-1 rounded-lg py-1.5 text-sm  text-jp-ink
+                class="flex-1 rounded-lg py-1.5 text-sm text-jp-ink
                        bg-gradient-to-b from-jp-gold2 to-jp-gold
-                       hover :brightness-95 active:translate-y-px transition"                onclick="swipe('${user.id}','dislike')">
+                       hover:brightness-95 active:translate-y-px transition"
+                onclick="event.stopPropagation(); swipe('${user.id}','dislike')">
                 Hide
               </button>
 
               <button
-                class="flex-1 rounded-lg py-1.5 text-sm font-semibold border border-jp-border text-jp-muted hover:text-jp-text hover:border-[rgba(15,23,42,0.18)] transition-colors"
-
-        
-                onclick="swipe('${user.id}','like')">
+                class="flex-1 rounded-lg py-1.5 text-sm font-semibold border border-jp-border text-jp-muted
+                       hover:text-jp-text hover:border-[rgba(15,23,42,0.18)] transition-colors"
+                onclick="event.stopPropagation(); swipe('${user.id}','like')">
                 Like
               </button>
             </div>
@@ -182,6 +257,59 @@
 
         container.appendChild(card);
       });
+    }
+
+    function openProfile(userId) {
+      const u = users.find(x => String(x.id) === String(userId));
+      if (!u) return;
+
+      const modal = document.getElementById("profileModal");
+
+      document.getElementById("pmAvatar").src = u.avatar || "default-avatar.png";
+      document.getElementById("pmName").textContent = u.name || "No name";
+      document.getElementById("pmEmail").textContent = u.email || "";
+
+      document.getElementById("pmAge").textContent = (u.age ?? "—");
+      document.getElementById("pmGender").textContent = (u.gender ?? "—");
+      document.getElementById("pmFaculty").textContent = (u.faculty ?? "—");
+      document.getElementById("pmCourse").textContent = (u.course ?? "—");
+
+      const interestsEl = document.getElementById("pmInterests");
+      interestsEl.innerHTML = "";
+
+      if (Array.isArray(u.interests) && u.interests.length) {
+        u.interests.forEach(i => {
+          const chip = document.createElement("span");
+          chip.className = "text-xs px-2 py-1 rounded-full border border-jp-border bg-white text-jp-text";
+          chip.textContent = i;
+          interestsEl.appendChild(chip);
+        });
+      } else {
+        const chip = document.createElement("span");
+        chip.className = "text-xs text-jp-muted";
+        chip.textContent = "—";
+        interestsEl.appendChild(chip);
+      }
+
+      document.getElementById("pmAbout").textContent = (u.about ?? "—");
+
+      const hideBtn = document.getElementById("pmHideBtn");
+      const likeBtn = document.getElementById("pmLikeBtn");
+
+      hideBtn.onclick = () => { closeProfile(); swipe(String(u.id), "dislike"); };
+      likeBtn.onclick = () => { closeProfile(); swipe(String(u.id), "like"); };
+
+      modal.classList.remove("hidden");
+
+      document.onkeydown = (e) => {
+        if (e.key === "Escape") closeProfile();
+      };
+    }
+
+    function closeProfile() {
+      const modal = document.getElementById("profileModal");
+      modal.classList.add("hidden");
+      document.onkeydown = null;
     }
 
     async function swipe(toUserId, type) {
@@ -200,14 +328,12 @@
 
       const data = await res.json();
 
-      // match creation
       if (data.status === "match" || data.status === "already_matched") {
         localStorage.setItem("matchId", data.matchId);
         window.location.href = "chat.html";
         return;
       }
 
-      
       users = users.filter(u => String(u.id) !== String(toUserId));
       renderUsers();
     }
